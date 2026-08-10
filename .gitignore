@@ -1,0 +1,39 @@
+# Zależności
+node_modules/
+
+# Build
+dist/
+dev-dist/
+*.local
+
+# Środowisko i sekrety (nigdy nie commituj)
+.env
+.env.*
+!.env.example
+
+# Narzędzia / logi
+.DS_Store
+*.log
+npm-debug.log*
+debug.log
+
+# Edytory
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Capacitor / Android build
+android/.gradle/
+android/build/
+android/app/build/
+android/app/capacitor.build.gradle
+android/app/src/main/assets/
+android/capacitor-cordova-android-plugins/cordova.variables.gradle
+android/capacitor.settings.gradle
+android/variables.gradle
+
+# iOS (jeżeli dodane)
+ios/App/App/public/
+ios/App/build/
+ios/App/Pods/
+ios/App/App.xcworkspace/xcuserdata/

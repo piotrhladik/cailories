@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Globalne style aplikacji Mobile-First ===== */
+
+:root {
+  /* Kolory BWT i akcentu dostępne też jako zmienne CSS */
+  --color-protein: #3b82f6;
+  --color-carbs: #10b981;
+  --color-fats: #f59e0b;
+  --color-accent: #84cc16;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-surface-light text-slate-800 antialiased dark:bg-surface-dark dark:text-slate-100;
+  /* Pomijamy zewnętrzne marginesy i włącza safe-area */
+  margin: 0;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Kontener aplikacji o maksymalnej szerokości 480px (mobile-first, desktop wyśrodkowany) */
+.app-shell {
+  @apply mx-auto flex min-h-full w-full max-w-app flex-col;
+}
+
+/* Wciśnięcie spod pasków systemowych (wycięcie / notch) na iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Płynne przewijanie i ukryty scrollbar dla karuzel poziomych */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Ograniczenie przewijania podczas aktywnego skanera barcode */
+body.scanning {
+  overflow: hidden;
+}
+
+@layer components {
+  /* Wspólny przycisk minimalnej wysokości dotykowej 44px */
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accent-dark;
+  }
+  .btn-secondary {
+    @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700;
+  }
+  .btn-outline {
+    @apply btn border border-accent bg-transparent text-accent-dark hover:bg-accent/10 dark:text-accent;
+  }
+  .btn-danger-ghost {
+    @apply btn text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10;
+  }
+
+  .card {
+    @apply rounded-3xl bg-white shadow-card dark:bg-slate-800;
+  }
+
+  .input {
+    @apply w-full min-h-[44px] rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
+}
