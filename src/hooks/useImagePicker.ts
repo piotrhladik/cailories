@@ -56,26 +56,7 @@ export function useImagePicker(): UseImagePickerResult {
       }
 
       // Ścieżka webowa — input[type=file].
-      const data: PickedImage | null = await new Promise((resolve) => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = fromCamera ? 'image/*;capture=camera' : 'image/*';
-        input.onchange = async () => {
-          const file = input.files?.[0];
-          if (!file) {
-            resolve(null);
-            return;
-          }
-          try {
-            const compressed = await compressImage(file);
-            resolve({ base64: compressed.base64, dataUrl: `data:image/jpeg;base64,${compressed.base64}` });
-          } catch {
-            resolve(null);
-          }
-        };
-        input.oncancel = () => resolve(null);
-        input.click();
-      });
+      const data: PickedImage | null = await pickFromWebInput(fromCamera);
 
       if (!data) {
         setPicking(false);
@@ -97,6 +78,59 @@ export function useImagePicker(): UseImagePickerResult {
   const resetError = useCallback(() => setLastError(null), []);
 
   return { picking, pick, resetError, lastError };
+}
+
+/** Otwarcie natywnego wybieraka plików (web/PWA) z gwarancją zakończenia.
+ *  Promise rozwiązuje się ZAWSZE — także po anulowaniu okna wyboru — dzięki
+ *  czemu stan `picking` nie zostaje zablokowany na stałe (stary bug). */
+function pickFromWebInput(fromCamera: boolean): Promise<PickedImage | null> {
+  return new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = fromCamera ? 'image/*;capture=camera' : 'image/*';
+
+    let settled = false;
+    const inputHasPendingFile = (): boolean => {
+      try {
+        return Boolean(input.files?.length);
+      } catch {
+        return false;
+      }
+    };
+    const finish = (result: PickedImage | null): void => {
+      if (settled) return;
+      settled = true;
+      window.removeEventListener('focus', onFocusRefocus);
+      window.clearTimeout(safetyTimer);
+      input.remove();
+      resolve(result);
+    };
+    // Anulowanie okna wyboru zwraca focus do dokumentu (a nie do inputa).
+    const onFocusRefocus = (): void => {
+      if (document.activeElement !== input && !inputHasPendingFile()) {
+        finish(null);
+      }
+    };
+    // Bezpiecznik: nawet jeśli żadne zdarzenie nie nadejdzie, Promise się rozwiąże.
+    const safetyTimer = window.setTimeout(() => finish(null), 120_000);
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) {
+        finish(null);
+        return;
+      }
+      try {
+        const compressed = await compressImage(file);
+        finish({ base64: compressed.base64, dataUrl: `data:image/jpeg;base64,${compressed.base64}` });
+      } catch {
+        finish(null);
+      }
+    };
+    input.oncancel = () => finish(null);
+    window.addEventListener('focus', onFocusRefocus);
+    input.click();
+  });
 }
 
 /** Konwersja base64 na Blob (do kompresji). */

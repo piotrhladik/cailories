@@ -27,7 +27,7 @@ export async function initializeAdMob(): Promise<void> {
   if (!isNativePlatform()) return;
   try {
     await AdMob.initialize({
-      initializeForTesting: true, // zmień na false dla produkcji
+      initializeForTesting: false, // produkcja: prawdziwe reklamy
       maxAdContentRating: MaxAdContentRating.ParentalGuidance,
     });
   } catch {
@@ -43,7 +43,7 @@ export async function showBanner(): Promise<void> {
       adId: BANNER_AD_UNIT_ID,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      isTesting: true, // zmień na false dla produkcji
+      isTesting: false, // produkcja
     });
   } catch {
     /* brak bannera nie przerywa działania */
@@ -66,7 +66,7 @@ export async function prepareInterstitial(): Promise<void> {
   try {
     await AdMob.prepareInterstitial({
       adId: INTERSTITIAL_AD_UNIT_ID,
-      isTesting: true,
+      isTesting: false, // produkcja
     });
   } catch {
     /* puste */

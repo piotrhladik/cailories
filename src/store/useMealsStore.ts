@@ -4,7 +4,8 @@
 // ============================================================================
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { createSafeZustandStorage } from '../services/storage';
 import type { DailySummary, Meal, Macro } from '../types';
 
 /** Utworzenie stabilnego identyfikatora wpisu. */
@@ -94,6 +95,8 @@ export const useMealsStore = create<MealsState>()(
     {
       name: 'nutriscan-meals',
       version: 1,
+      // Bezpieczna persysta: nie rzuca przy QuotaExceeded — zapis degradowany.
+      storage: createJSONStorage(createSafeZustandStorage),
     },
   ),
 );

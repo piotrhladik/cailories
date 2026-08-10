@@ -117,8 +117,14 @@ export function Scanner(): JSX.Element {
   /** Dodanie produktu do dziennika z wybraną porcją. */
   const addToJournal = (): void => {
     if (!product || !product.found) return;
-    const grams = Number(portion);
-    const factor = Number.isFinite(grams) && grams > 0 ? grams / 100 : 1;
+    const raw = portion.trim();
+    const grams = Number(raw);
+    // Pusta/nieprawidłowa porcja nie może po cichu zalogować 100 g.
+    if (raw === '' || !Number.isFinite(grams) || grams <= 0) {
+      show('Podaj wielkość porcji w gramach.', 'error');
+      return;
+    }
+    const factor = grams / 100;
     addMeal({
       name: product.productName,
       calories: Math.round(product.caloriesPer100g * factor),

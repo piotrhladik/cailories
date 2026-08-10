@@ -188,19 +188,29 @@ export async function fetchAvailableModels(apiKey: string): Promise<GeminiModel[
   }
 
   const data = (await res.json()) as { models?: Array<{ name?: string; displayName?: string; supportedGenerationMethods?: string[] }> };
-  const models: GeminiModel[] = (data.models ?? [])
-    .filter(
-      (m) => m.supportedGenerationMethods?.includes('generateContent') && m.name?.startsWith('models/gemini'),
-    )
-    .map((m) => ({
-      name: (m.name ?? '').replace(/^models\//, ''),
-      displayName: m.displayName ?? (m.name ?? '').replace(/^models\//, ''),
-      supported: true,
-    }))
-    // Sortowanie alfabetyczne dla stabilności listy.
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const rawModels = (data.models ?? []).filter(
+    (m) => m.supportedGenerationMethods?.includes('generateContent') && m.name?.startsWith('models/gemini'),
+  );
 
-  return models;
+  const filtered: GeminiModel[] = rawModels.map((m) => ({
+    name: (m.name ?? '').replace(/^models\//, ''),
+    displayName: m.displayName ?? (m.name ?? '').replace(/^models\//, ''),
+    supported: true,
+  }));
+
+  // Priorytetyzacja 5 najnowszych modeli (flash-lite, flash, pro, preview)
+  const prioritized = filtered.sort((a, b) => {
+    const score = (name: string): number => {
+      if (name.includes('flash-lite')) return 5;
+      if (name.includes('flash')) return 4;
+      if (name.includes('pro')) return 3;
+      if (name.includes('preview')) return 2;
+      return 1;
+    };
+    return score(b.name) - score(a.name) || a.name.localeCompare(b.name);
+  }).slice(0, 5);
+
+  return prioritized;
 }
 
 /**

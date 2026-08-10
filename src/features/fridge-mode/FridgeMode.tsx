@@ -70,7 +70,8 @@ export function FridgeMode(): JSX.Element {
       calories: recipe.calories,
       macros: { protein: recipe.protein, carbs: recipe.carbs, fats: recipe.fats },
       source: 'fridge',
-      image: image?.dataUrl,
+      // Celowo bez zdjęcia: miniatura lodówki nie jest zdjęciem dania i
+      // duplikowałaby duży base64 do każdej propozycji (przepełnienie storage).
     });
     show(`Dodano: ${recipe.name} ✔`, 'success');
     // Monetyzacja — interstitial po dodaniu.

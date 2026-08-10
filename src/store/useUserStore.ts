@@ -1,14 +1,11 @@
 // ============================================================================
 // useUserStore — sklep Zustand z danymi użytkownika, kluczem API i zgodą prawną.
-// Persistent w localStorage (Offline-First). Klucz API pozostaje wyłącznie
-// na urządzeniu użytkownika — nigdy nie jest wysyłany na zewnętrzne serwery.
 // ============================================================================
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { UserProfile, GeminiModel, ApiKeyValidationStatus } from '../types';
 
-/** Domyślny profil BWT — wg ogólnych zaleceń (B 15%, W 50%, T 35% energii). */
 const DEFAULT_PROFILE: UserProfile = {
   dailyCaloriesGoal: 2200,
   macrosGoal: { protein: 120, carbs: 275, fats: 85 },
@@ -20,20 +17,16 @@ const DEFAULT_PROFILE: UserProfile = {
 };
 
 interface UserState {
-  /** Profil i cele makro. */
   profile: UserProfile;
-  /** Klucz API Gemini użytkownika. */
   apiKey: string;
-  /** Wybrany model Gemini. */
   selectedModel: string;
-  /** Modele pobrane z API (cache). */
   availableModels: GeminiModel[];
-  /** Zgoda na Medical Disclaimer (true = zaakceptowano). */
   disclaimerAccepted: boolean;
-  /** Status walidacji klucza API. */
   apiKeyStatus: ApiKeyValidationStatus;
-  /** Dark mode — zmienna nadrzędna nad preferencją systemu (null = system). */
   theme: 'light' | 'dark' | 'system';
+  onboardingCompleted: boolean;
+  userName: string;
+  avatarUrl: string;
 
   setApiKey: (key: string) => void;
   setModel: (model: string) => void;
@@ -42,6 +35,9 @@ interface UserState {
   acceptDisclaimer: () => void;
   updateProfile: (patch: Partial<UserProfile>) => void;
   setTheme: (theme: UserState['theme']) => void;
+  setOnboardingCompleted: (val: boolean) => void;
+  setUserName: (name: string) => void;
+  setAvatarUrl: (url: string) => void;
   resetAll: () => void;
 }
 
@@ -55,18 +51,26 @@ export const useUserStore = create<UserState>()(
       disclaimerAccepted: false,
       apiKeyStatus: 'idle',
       theme: 'system',
+      onboardingCompleted: false,
+      userName: 'Użytkownik',
+      avatarUrl: '',
 
-      setApiKey: (key) => set({ apiKey: key.trim(), apiKeyStatus: key.trim() ? 'checking' : 'idle' }),
+      setApiKey: (key) => set({ 
+        apiKey: key, 
+        apiKeyStatus: key.trim() ? 'checking' : 'idle' 
+      }),
       setModel: (model) => set({ selectedModel: model }),
       setAvailableModels: (models) => set({ availableModels: models }),
       setApiKeyStatus: (status) => set({ apiKeyStatus: status }),
-
+      // Zgoda na klauzulę NIE kończy onboardingu — aplikacja odblokowuje się
+      // dopiero po poprawnym kluczu API i uzupełnieniu profilu (patrz OnboardingFlow).
       acceptDisclaimer: () => set({ disclaimerAccepted: true }),
-
       updateProfile: (patch) =>
         set((state) => ({ profile: { ...state.profile, ...patch } })),
-
       setTheme: (theme) => set({ theme }),
+      setOnboardingCompleted: (val) => set({ onboardingCompleted: val }),
+      setUserName: (name) => set({ userName: name }),
+      setAvatarUrl: (url) => set({ avatarUrl: url }),
       resetAll: () =>
         set({
           profile: DEFAULT_PROFILE,
@@ -76,11 +80,14 @@ export const useUserStore = create<UserState>()(
           disclaimerAccepted: false,
           apiKeyStatus: 'idle',
           theme: 'system',
+          onboardingCompleted: false,
+          userName: 'Użytkownik',
+          avatarUrl: '',
         }),
     }),
     {
       name: 'nutriscan-user',
-      version: 1,
+      version: 2,
     },
   ),
 );

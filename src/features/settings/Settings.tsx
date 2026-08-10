@@ -9,6 +9,7 @@
 import { useState } from 'react';
 import { Calculator, CheckCircle2, Key, List, Loader2, RotateCcw, XCircle } from 'lucide-react';
 import { useUserStore } from '../../store/useUserStore';
+import { useMealsStore } from '../../store/useMealsStore';
 import { useToastStore } from '../../store/useToastStore';
 import { fetchAvailableModels, looksLikeApiKey } from '../../services/geminiApi';
 import { calculateTDEE, macrosFromCalories } from '../../utils/bmr';
@@ -73,6 +74,8 @@ export function Settings(): JSX.Element {
   };
 
   const handleNumber = (field: 'heightCm' | 'weightKg' | 'age', value: string): void => {
+    // Puste pole przy czyszczeniu NIE może nadpisywać profilu zerem.
+    if (value.trim() === '') return;
     const n = Number(value);
     if (Number.isFinite(n)) {
       updateProfile({ [field]: n } as Partial<typeof profile>);
@@ -158,6 +161,8 @@ export function Settings(): JSX.Element {
         <Button variant="danger-ghost" className="w-full" onClick={() => {
           if (window.confirm('Usunąć wszystkie dane aplikacji i zacząć od nowa?')) {
             resetAll();
+            // Resetuje też dziennik posiłków (ze zdjęciami) — nie tylko profil.
+            useMealsStore.getState().clearAll();
             show('Dane aplikacji zostały zresetowane.', 'info');
           }
         }}>

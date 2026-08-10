@@ -53,6 +53,23 @@ export function DaySummaryPanel(): JSX.Element {
 
   const remaining = Math.max(0, profile.dailyCaloriesGoal - summary.calories);
 
+  const copySummary = async (): Promise<void> => {
+    const lines = [
+      `Podsumowanie dnia: ${formatDateLong(selectedDate)}`,
+      `Kalorie: ${summary.calories} / ${profile.dailyCaloriesGoal} kcal`,
+      `Makro: B ${summary.macros.protein} g | W ${summary.macros.carbs} g | T ${summary.macros.fats} g`,
+      `Posiłki: ${summary.mealCount}`,
+      ...meals.map((meal) => `- ${meal.name} (${meal.calories} kcal)`),
+    ];
+
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'));
+      show('Podsumowanie dnia skopiowane do schowka.', 'success');
+    } catch {
+      show('Nie udało się skopiować podsumowania.', 'error');
+    }
+  };
+
   const addManualMeal = (): void => {
     const name = manual.name.trim();
     const cal = Number(manual.calories);
@@ -149,11 +166,16 @@ export function DaySummaryPanel(): JSX.Element {
             <UtensilsCrossed size={16} aria-hidden="true" />
             Posiłki ({summary.mealCount})
           </h3>
-          {isToday && (
-            <Button variant="outline" onClick={() => setShowManual((v) => !v)}>
-              + Dodaj ręcznie
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => void copySummary()}>
+              Kopiuj skrót
             </Button>
-          )}
+            {isToday && (
+              <Button variant="outline" onClick={() => setShowManual((v) => !v)}>
+                + Dodaj ręcznie
+              </Button>
+            )}
+          </div>
         </div>
 
         <AnimatePresence initial={false}>

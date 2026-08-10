@@ -93,7 +93,7 @@ export interface UserProfile {
 
 /** Model Gemini dostępny dla użytkownika. */
 export interface GeminiModel {
-  /** Identyfikator modelu do zapytań zapisu (np. "gemini-2.5-flash"). */
+  /** Identyfikator modelu do zapytań zapisu (np. "gemini-1.5-flash"). */
   name: string;
   /** Wyświetlana nazwa (np. "Gemini 2.5 Flash"). */
   displayName: string;

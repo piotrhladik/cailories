@@ -3,6 +3,8 @@
 // obsługą błędów (np. tryb prywatny / brak miejsca). Offline-First.
 // ============================================================================
 
+import type { StateStorage } from 'zustand/middleware';
+
 const PREFIX = 'nutriscan:';
 
 /** Odczyt wartości JSON z localStorage (bezpiecznie). */
@@ -49,4 +51,52 @@ export function storageSizeBytes(): number {
   } catch {
     return 0;
   }
+}
+
+/**
+ * Adapter Zustand `persist` → bezpieczny localStorage.
+ * - Nigdy nie rzuca: przy braku miejsca (QuotaExceededError) zapis DEGRADUJE się
+ *   zamiast wywalać `addMeal` — ponawia zapis po odrzuceniu binarnych zdjęć.
+ * - Klucz pozostaje bez prefiksu (kompatybilny z dotychczasowym 'nutriscan-meals').
+ */
+export function createSafeZustandStorage(): StateStorage {
+  return {
+    getItem: (name) => {
+      try {
+        return localStorage.getItem(name);
+      } catch {
+        return null;
+      }
+    },
+    setItem: (name, value) => {
+      try {
+        localStorage.setItem(name, value);
+      } catch {
+        // Przepełnienie limitu (QuotaExceededError) — spróbuj bez zdjęć.
+        try {
+          const parsed = JSON.parse(value) as {
+            state?: { mealsByDay?: Record<string, Array<{ image?: string }>> };
+          };
+          const days = parsed.state?.mealsByDay;
+          if (days) {
+            for (const list of Object.values(days)) {
+              if (list) {
+                for (const meal of list) delete meal.image;
+              }
+            }
+          }
+          localStorage.setItem(name, JSON.stringify(parsed));
+        } catch {
+          // dajemy za wygraną — brak zapisu, ale bez crasha
+        }
+      }
+    },
+    removeItem: (name) => {
+      try {
+        localStorage.removeItem(name);
+      } catch {
+        /* ignorujemy — brak dostępu do storage */
+      }
+    },
+  };
 }

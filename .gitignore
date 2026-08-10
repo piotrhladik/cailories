@@ -6,6 +6,9 @@ dist/
 dev-dist/
 *.local
 
+# Worktree (tymczasowe katalogi robocze agentów)
+.worktrees/
+
 # Środowisko i sekrety (nigdy nie commituj)
 .env
 .env.*

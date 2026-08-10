@@ -1,11 +1,7 @@
-// ============================================================================
-// BottomNav.tsx — dolna nawigacja (Mobile-First) z animowanym wskaźnikiem.
-// Kolejność: Czat (podstawa), Lodówka, EAN, Dziennik, Ustawienia.
-// ============================================================================
-
 import { motion } from 'framer-motion';
 import { MessageCircleHeart, Refrigerator, ScanLine, Home, Settings } from 'lucide-react';
 import type { TabKey } from '../../types';
+import { useUserStore } from '../../store/useUserStore';
 
 interface NavItem {
   key: TabKey;
@@ -13,7 +9,6 @@ interface NavItem {
   icon: JSX.Element;
 }
 
-/** Kolejność celowo zaczyna się od Czatu — serca aplikacji. */
 const ITEMS: NavItem[] = [
   { key: 'chat', label: 'Czat', icon: <MessageCircleHeart size={21} /> },
   { key: 'fridge', label: 'Lodówka', icon: <Refrigerator size={21} /> },
@@ -27,7 +22,13 @@ interface BottomNavProps {
   onChange: (tab: TabKey) => void;
 }
 
-export function BottomNav({ active, onChange }: BottomNavProps): JSX.Element {
+export function BottomNav({ active, onChange }: BottomNavProps): JSX.Element | null {
+  const onboardingCompleted = useUserStore((s) => s.onboardingCompleted);
+
+  if (!onboardingCompleted) {
+    return null;
+  }
+
   return (
     <nav
       aria-label="Nawigacja dolna"
@@ -44,7 +45,6 @@ export function BottomNav({ active, onChange }: BottomNavProps): JSX.Element {
               aria-current={isActive ? 'page' : undefined}
               className="relative flex min-h-[54px] flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 text-[10px] font-medium"
             >
-              {/* Wskaźnik aktywnej karty */}
               {isActive && (
                 <motion.span
                   layoutId="nav-pill"
