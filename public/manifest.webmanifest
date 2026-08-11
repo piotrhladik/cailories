@@ -1,6 +1,6 @@
 {
   "name": "CaiLORIES",
-  "short_name": "NutriScan",
+  "short_name": "CaiLORIES",
   "description": "Inteligentny kalkulator kalorii i makroskładników (B, W, T). Analiza posiłku zdjęciem, opisem lub kodem EAN.",
   "id": "/",
   "start_url": "./",

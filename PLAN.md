@@ -1,4 +1,4 @@
-# NutriScan AI Development Plan
+# CaiLORIES Development Plan
 
 ## Project Overview
 CaiLORIES — Hybrydowa aplikacja dietetyczna (Android + PWA).

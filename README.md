@@ -1,4 +1,4 @@
-# 🥗 NutriScan AI / FitCalorie AI
+# 🥗 CaiLORIES
 
 Hybrydowa (Android APK + iOS PWA) aplikacja dietetyczna — **inteligentny kalkulator kalorii i makroskładników (BWT: Białko, Węglowodany, Tłuszcze)**.
 

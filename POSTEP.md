@@ -1,4 +1,4 @@
-# POSTĘP — CaiLORIES (NutriScan AI)
+# POSTĘP — CaiLORIES
 
 | Etap | Co zrobiono | Wynik | Uwagi |
 |------|-------------|-------|-------|

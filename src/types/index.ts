@@ -1,5 +1,5 @@
 // ============================================================================
-// Definicje typów TypeScript — wspólne modele danych aplikacji NutriScan AI.
+// Definicje typów TypeScript — wspólne modele danych aplikacji CaiLORIES.
 // Wszystkie typy obowiązują w całym projekcie (strict mode, zakaz `any`).
 // ============================================================================
 
