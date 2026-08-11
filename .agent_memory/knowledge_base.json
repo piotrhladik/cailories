@@ -1,0 +1,48 @@
+{
+  "project": {
+    "name": "CaiLORIES (dawniej NutriScan AI)",
+    "stack": "React 18.3 + TypeScript strict + Vite 5 + Tailwind 3 + Framer Motion 13 + Zustand 4.5 + Capacitor 8",
+    "platform": "Android (Capacitor), docelowo PWA",
+    "design": "premium iPhone-style, zero AI slop (zero purpurowych gradientów, zero Inter)",
+    "branches": "main",
+    "build": "npm run build (Vite), typowanie: npm run typecheck",
+    "keys_persist": {
+      "useUserStore": "nutriscan-user v2",
+      "useMealsStore": "nutriscan-meals v1 + createSafeZustandStorage",
+      "useProgressStore": "nutriscan-progress v1 + createSafeZustandStorage"
+    }
+  },
+  "decisions": [
+    "CaiLORIES rebrand — splash 'CaiLORIES' levitation (floatTitle 3.2s) done; GlowFrame dla klauzuli i pickera modelu",
+    "TabKey zyskuje 'progress' — 6. zakładka Postęp w BottomNav",
+    "AdMob produkcja: APP ca-app-pub-1761393785289872~7024057976, Banner ca-app-pub-1761393785289872/3751741383 (ADAPTIVE, BOTTOM_CENTER), interstitial pusty (no-op). ZERO test IDs w buildzie",
+    "Banner AdMob gated na onboardingCompleted + unikanie overlap z sticky BottomNav",
+    "useProgressStore: waga (A1), pomiary (A5), woda (A2) — jedna persystencja 'nutriscan-progress' v1",
+    "Reminders D3: domyślnie wszystkie wyłączone {enabled:false, time:'HH:mm'} — safe opt-in, brak promptu o permisje bez zgody; persist user v2 bez migracji (merge do defaultów)",
+    "Wykresy SVG własne (bez biblioteki, budżet <200KB gzip), Framer Motion line-draw",
+    "ai_logic_fix invariant: powitania = tekst (e.code CHAT → info toast), analizy posiłków = JSON",
+    "Fan-out przez Workflow: 7 agentów build, disjoint file ownership, typecheck JEDEN po integracji (uniknięcie ras npm)",
+    "Design-system: semantyczne tokeny CSS-var (primary/background/foreground/muted/secondary) w tailwind.config + index.css :root/.dark — onboarding przestał być przezroczysty; kontrast .btn-primary slate-900 (AAA 7.3:1), .btn-outline lime-700 (AA 5.6:1)",
+    "Onboarding: po kluczu picker modelu (default gemini-3.5-flash-lite) → start czatu bez kroku profilu (GlowFrame wokół klauzuli)",
+    "WIP 2026-08-11 niezacommitowane: ProgressScreen A1-A5 + zakładka 'progress', gate AdMob, D1 suggestRecipes, D2 Coach, D3 notifications — typecheck+build zielone (2098 modułów, gzip 134.27 kB)"
+  ],
+  "pitfalls": [
+    "geminiApi.ts: backslash-escaping regression — nie łamać promptów/JSON w łańcuchach; regex `^models\/` z podwójnie-escape'owanym backslashem cicho nie dopasowuje i psuje walidację klucza",
+    "geminiApi.ts: osierocone `\\` po `+` w stringach budzą błąd tsc — trzymać surowe regexy bez podwójnego escapingu",
+    "QuotaExceeded localStorage: createSafeZustandStorage stripuje meal.image i ponawia zapis",
+    "Zustand persist: NIE podbijać version bez migracji — nowe pola łączą się do initial state",
+    "ścieżka repo zawiera spację — cudzysłowy w poleceniach",
+    "Nie wpisywać konwersacji/plików do commitów — tylko ścieżki + 1 zdanie",
+    "functions >40 linii zakazane — dzielić komponenty",
+    "dodawanie nowej zakładki TabKey wymaga wpisu w TITLES w App.tsx (tytuł+podtytuł)",
+    "Tailwind 3.4: opacity modifiers (bg-x/10) NIE kompilują się dla kolorów configu zdefiniowanych jako var() (cichy drop, zero color-mix) — działają tylko dla statycznych hexów (accent → #84cc161a). Tinty/opacity robić na accent, var() tylko w klasach bez opacity"
+  ],
+  "preferences": [
+    "Komentarze PL, nazwy identyfikatorów EN",
+    "Jeden `npm run typecheck` na etap (po integracji), potem build",
+    "Conventional Commits",
+    "POSTEP.md tabela max 3-5 linii na etap, bez kodu",
+    "Baza wiedzy kompaktowo 2-3 wpisy na etap"
+  ],
+  "skills_used": ["superpowers", "frontend-design", "workflow-orchestration"]
+}

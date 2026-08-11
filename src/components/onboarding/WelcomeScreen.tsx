@@ -44,7 +44,7 @@ export default function WelcomeScreen({ onNext }: Props) {
       >
         <motion.div
           variants={revealItem}
-          className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary"
+          className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-accent/10 text-accent-dark dark:text-accent"
         >
           <Sparkles size={40} aria-hidden="true" />
         </motion.div>
@@ -73,7 +73,7 @@ export default function WelcomeScreen({ onNext }: Props) {
           transition={spring()}
           onClick={onNext}
           aria-label="Otwórz kreator profilu i rozpocznij pracę z aplikacją"
-          className="rounded-full bg-primary px-8 py-3 font-semibold text-primary-foreground shadow-md transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="rounded-full bg-primary px-8 py-3 font-semibold text-primary-foreground shadow-md transition-colors hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           Rozpocznij
         </motion.button>

@@ -120,7 +120,18 @@ export interface ApiKeyState {
 export type AsyncState = 'idle' | 'loading' | 'success' | 'error';
 
 /** Kategorie nawigacji dolnej. */
-export type TabKey = 'dashboard' | 'fridge' | 'scanner' | 'chat' | 'settings';
+export type TabKey = 'dashboard' | 'fridge' | 'scanner' | 'chat' | 'progress' | 'settings';
+
+/** Klucze przypomnień (D3) — posiłki + woda. */
+export type ReminderKey = 'breakfast' | 'lunch' | 'dinner' | 'water';
+
+/** Konfiguracja pojedynczego przypomnienia. */
+export interface ReminderConfig {
+  /** Czy przypomnienie jest aktywne. */
+  enabled: boolean;
+  /** Godzina w formacie "HH:mm". */
+  time: string;
+}
 
 /** Format danych produktu z Open Food Facts, który nam potrzebny. */
 export interface ProductInfo {

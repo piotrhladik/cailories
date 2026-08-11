@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MessageCircleHeart, Refrigerator, ScanLine, Home, Settings } from 'lucide-react';
+import { MessageCircleHeart, Refrigerator, ScanLine, Home, TrendingUp, Settings } from 'lucide-react';
 import type { TabKey } from '../../types';
 import { useUserStore } from '../../store/useUserStore';
 
@@ -14,6 +14,7 @@ const ITEMS: NavItem[] = [
   { key: 'fridge', label: 'Lodówka', icon: <Refrigerator size={21} /> },
   { key: 'scanner', label: 'EAN', icon: <ScanLine size={21} /> },
   { key: 'dashboard', label: 'Dziennik', icon: <Home size={21} /> },
+  { key: 'progress', label: 'Postępy', icon: <TrendingUp size={21} /> },
   { key: 'settings', label: 'Ustaw.', icon: <Settings size={21} /> },
 ];
 

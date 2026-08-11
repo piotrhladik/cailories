@@ -12,6 +12,7 @@ import { FridgeMode } from './features/fridge-mode/FridgeMode';
 import { Scanner } from './features/scanner/Scanner';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { Settings } from './features/settings/Settings';
+import ProgressScreen from './features/progress/ProgressScreen';
 import { initializeAdMob } from './services/admobService';
 import { WEB_ADS_ENABLED } from './config';
 import type { TabKey } from './types';
@@ -22,6 +23,7 @@ const TITLES: Record<TabKey, { title: string; subtitle: string }> = {
   fridge: { title: 'Tryb Lodówki', subtitle: 'Pomysły na posiłki' },
   scanner: { title: 'Skaner EAN', subtitle: 'Open Food Facts' },
   dashboard: { title: 'Dziennik', subtitle: 'Kalorie i BWT' },
+  progress: { title: 'Postępy', subtitle: 'Waga, woda i cele' },
   settings: { title: 'Ustawienia', subtitle: 'Klucz i profil' },
 };
 
@@ -73,13 +75,14 @@ export function App(): JSX.Element {
               {tab === 'fridge' && <FridgeMode />}
               {tab === 'scanner' && <Scanner />}
               {tab === 'dashboard' && <Dashboard />}
+              {tab === 'progress' && <ProgressScreen />}
               {tab === 'settings' && <Settings />}
             </motion.div>
           </AnimatePresence>
         </main>
       )}
       
-      {WEB_ADS_ENABLED && <AdBanner force />}
+      {WEB_ADS_ENABLED && onboardingCompleted && <AdBanner force />}
       <DailySummaryDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       
       {onboardingCompleted && <BottomNav active={tab} onChange={setTab} />}

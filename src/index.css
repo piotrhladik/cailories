@@ -10,6 +10,27 @@
   --color-carbs: #10b981;
   --color-fats: #f59e0b;
   --color-accent: #84cc16;
+
+  /* Tokeny semantyczne (onboarding): ciemny tekst na limonce — AAA */
+  --color-primary: #84cc16;
+  --color-primary-foreground: #0f172a;
+  --color-primary-dark: #65a30d;
+  --color-background: #f8fafc;
+  --color-foreground: #1e293b;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-secondary: #f1f5f9;
+}
+
+.dark {
+  --color-primary: #a3e635;
+  --color-primary-foreground: #0f172a;
+  --color-primary-dark: #84cc16;
+  --color-background: #0f172a;
+  --color-foreground: #f1f5f9;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-secondary: #1e293b;
 }
 
 html,
@@ -59,13 +80,15 @@ body.scanning {
     @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-accent text-white hover:bg-accent-dark;
+    /* Ciemny tekst na limonce ≈ 7.3:1 (AAA) — zamiast białego 1.82:1 (fail AA) */
+    @apply btn bg-accent text-slate-900 hover:bg-accent-dark;
   }
   .btn-secondary {
     @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700;
   }
   .btn-outline {
-    @apply btn border border-accent bg-transparent text-accent-dark hover:bg-accent/10 dark:text-accent;
+    /* lime-700 na białym ≈ 5.6:1 (AA) — zamiast accent-dark 3.0:1 (fail AA) */
+    @apply btn border border-accent bg-transparent text-lime-700 hover:bg-accent/10 dark:text-lime-300;
   }
   .btn-danger-ghost {
     @apply btn text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10;

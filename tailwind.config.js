@@ -32,6 +32,20 @@ export default {
           light: '#F8FAFC',
           dark: '#0F172A',
         },
+        // Tokeny design-system (semantyczne) — wartości w CSS vars w index.css,
+        // dzięki czemu obsługują tryb ciemny przez klasę .dark.
+        primary: {
+          DEFAULT: 'var(--color-primary)',
+          foreground: 'var(--color-primary-foreground)',
+          dark: 'var(--color-primary-dark)',
+        },
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
+        muted: {
+          DEFAULT: 'var(--color-muted)',
+          foreground: 'var(--color-muted-foreground)',
+        },
+        secondary: 'var(--color-secondary)',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],

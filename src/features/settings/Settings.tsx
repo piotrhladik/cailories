@@ -7,15 +7,47 @@
 // ============================================================================
 
 import { useState } from 'react';
-import { Calculator, CheckCircle2, Key, List, Loader2, RotateCcw, XCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  Bell,
+  Calculator,
+  CheckCircle2,
+  Droplets,
+  Key,
+  List,
+  Loader2,
+  Moon,
+  RotateCcw,
+  Sun,
+  Sunrise,
+  XCircle,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useUserStore } from '../../store/useUserStore';
 import { useMealsStore } from '../../store/useMealsStore';
 import { useToastStore } from '../../store/useToastStore';
 import { fetchAvailableModels, looksLikeApiKey } from '../../services/geminiApi';
+import { syncMealReminders } from '../../services/notifications';
 import { calculateTDEE, macrosFromCalories } from '../../utils/bmr';
 import { Button } from '../../components/ui/Button';
 import { DEFAULT_MODEL } from '../../config';
-import type { Gender, GeminiModel } from '../../types';
+import type { Gender, GeminiModel, ReminderConfig, ReminderKey } from '../../types';
+
+/** Definicje wierszy sekcji Przypomnienia (D3). */
+const REMINDER_ROWS: Array<{ key: ReminderKey; label: string; hint: string; icon: LucideIcon }> = [
+  { key: 'breakfast', label: 'Śniadanie', hint: 'Dobry start dnia', icon: Sunrise },
+  { key: 'lunch', label: 'Obiad', hint: 'Główny posiłek', icon: Sun },
+  { key: 'dinner', label: 'Kolacja', hint: 'Lekki wieczór', icon: Moon },
+  { key: 'water', label: 'Woda', hint: 'Nawodnienie', icon: Droplets },
+];
+
+/** Etykiety przypomnień dla komunikatów. */
+const REMINDER_LABEL: Record<ReminderKey, string> = {
+  breakfast: 'Śniadanie',
+  lunch: 'Obiad',
+  dinner: 'Kolacja',
+  water: 'Woda',
+};
 
 export function Settings(): JSX.Element {
   const profile = useUserStore((s) => s.profile);
@@ -29,9 +61,36 @@ export function Settings(): JSX.Element {
   const availableModels = useUserStore((s) => s.availableModels);
   const setAvailableModels = useUserStore((s) => s.setAvailableModels);
   const resetAll = useUserStore((s) => s.resetAll);
+  const reminders = useUserStore((s) => s.reminders);
+  const setReminder = useUserStore((s) => s.setReminder);
   const show = useToastStore((s) => s.show);
 
   const [validating, setValidating] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+
+  /**
+   * D3: zmiana przypomnienia — optymistyczny zapis w sklepie, potem synchronizacja
+   * planu powiadomień. Przy błędzie (np. brak uprawnień / web-PWA) cofamy zmianę
+   * i pokazujemy toast — zero crashy.
+   * */
+  const handleReminderChange = async (key: ReminderKey, patch: Partial<ReminderConfig>): Promise<void> => {
+    const prev = useUserStore.getState().reminders[key];
+    setReminder(key, patch);
+    const next = useUserStore.getState().reminders;
+    setSyncing(true);
+    try {
+      await syncMealReminders(next);
+      if (patch.enabled === true) {
+        show(`Włączono przypomnienie: ${REMINDER_LABEL[key]} ✔`, 'success');
+      }
+    } catch (err) {
+      setReminder(key, prev);
+      const msg = (err as { message?: string }).message ?? 'Nie udało się ustawić przypomnienia.';
+      show(msg, 'error');
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   /** Walidacja klucza + pobranie modeli. */
   const validateKey = async (): Promise<void> => {
@@ -156,6 +215,27 @@ export function Settings(): JSX.Element {
         </p>
       </div>
 
+      {/* Przypomnienia (D3) */}
+      <div className="space-y-3">
+        <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <Bell size={16} aria-hidden="true" /> Przypomnienia
+        </h3>
+        <div className="card divide-y divide-slate-100 dark:divide-slate-700">
+          {REMINDER_ROWS.map((row) => (
+            <ReminderRow
+              key={row.key}
+              row={row}
+              config={reminders[row.key]}
+              busy={syncing}
+              onChange={(patch) => void handleReminderChange(row.key, patch)}
+            />
+          ))}
+        </div>
+        <p className="text-xs text-slate-400 dark:text-slate-500">
+          Przypomnienia działają w aplikacji mobilnej (Android/iOS). W przeglądarce PWA są niedostępne.
+        </p>
+      </div>
+
       {/* Strefa ryzyka */}
       <div className="space-y-2">
         <Button variant="danger-ghost" className="w-full" onClick={() => {
@@ -243,5 +323,80 @@ function ActivityField({ value, onChange }: { value: number; onChange: (v: numbe
         ))}
       </select>
     </div>
+  );
+}
+
+/** Pojedynczy wiersz przypomnienia: ikona, etykieta, godzina, przełącznik (D3). */
+function ReminderRow({
+  row,
+  config,
+  busy,
+  onChange,
+}: {
+  row: { key: ReminderKey; label: string; hint: string; icon: LucideIcon };
+  config: ReminderConfig;
+  busy: boolean;
+  onChange: (patch: Partial<ReminderConfig>) => void;
+}): JSX.Element {
+  const Icon = row.icon;
+  return (
+    <div className="flex items-center gap-3 p-3">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-accent/15 text-accent">
+        <Icon size={18} aria-hidden="true" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold">{row.label}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500">{row.hint}</p>
+      </div>
+      <input
+        type="time"
+        className="input w-auto py-1.5 text-sm"
+        value={config.time}
+        disabled={busy}
+        onChange={(e) => onChange({ time: e.target.value })}
+        aria-label={`Godzina przypomnienia: ${row.label}`}
+      />
+      <ToggleSwitch
+        checked={config.enabled}
+        disabled={busy}
+        onChange={(v) => onChange({ enabled: v })}
+        label={`Przypomnienie: ${row.label}`}
+      />
+    </div>
+  );
+}
+
+/** Premium przełącznik (switch) z animowaną gałką (Framer Motion). */
+function ToggleSwitch({
+  checked,
+  disabled,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  disabled: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}): JSX.Element {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+        checked ? 'bg-accent' : 'bg-slate-300 dark:bg-slate-600'
+      } ${disabled ? 'opacity-50' : ''}`}
+    >
+      <motion.span
+        layout
+        transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+        className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow ${
+          checked ? 'left-6' : 'left-1'
+        }`}
+      />
+    </button>
   );
 }

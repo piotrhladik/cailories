@@ -234,6 +234,35 @@ const MEAL_SCHEMA: Record<string, unknown> = {
   required: ['name', 'calories', 'protein', 'carbs', 'fats'],
 };
 
+/** Kontekst celów użytkownika dla sugerowanych przepisów (D1). */
+export interface RecipeGoalsContext {
+  /** Dzienna kaloryczność (kcal). */
+  calories: number;
+  /** Dzienne białko (g). */
+  protein: number;
+  /** Dzienne węglowodany (g). */
+  carbs: number;
+  /** Dzienne tłuszcze (g). */
+  fats: number;
+  /** Liczba posiłków dziennie (porcje skalowane do ~1 posiłku). */
+  mealsPerDay: number;
+  /** Preferencje żywieniowe (np. "wegetariańskie, bez orzechów"). */
+  preferences?: string;
+}
+
+/** Budowa fragmentu promptu z celami użytkownika (D1). */
+function buildRecipeGoalsPrompt(goals: RecipeGoalsContext): string {
+  const perMeal = Math.max(1, Math.round(goals.calories / Math.max(1, goals.mealsPerDay)));
+  const lines = [
+    `Cele dzienne użytkownika: ${goals.calories} kcal, B ${goals.protein} g, W ${goals.carbs} g, T ${goals.fats} g.`,
+    `Dopasuj porcje tak, aby jedno danie miało około ${perMeal} kcal.`,
+  ];
+  if (goals.preferences?.trim()) {
+    lines.push(`Preferencje użytkownika: ${goals.preferences.trim()}.`);
+  }
+  return lines.join('\n');
+}
+
 /** Wymagany schemat dla propozycji potraw trybu lodówki. */
 const RECIPES_SCHEMA: Record<string, unknown> = {
   type: 'ARRAY',
@@ -306,18 +335,23 @@ export async function analyzeMeal(apiKey: string,
 /**
  * Generator 2-3 propozycji potraw na podstawie zawartości \"lodówki\".
  * Można podać składniki tekstowo oraz/lub zdjęcie zawartości lodówki.
+ * Cele użytkownika (kcal/makro, liczba posiłków) dopasowują wielkość porcji (D1).
  * */
-export async function suggestRecipes(apiKey: string,
+export async function suggestRecipes(
+  apiKey: string,
   model: string,
-  input: { ingredients?: string; imageBase64?: string; request?: string },
+  input: { ingredients?: string; imageBase64?: string; request?: string; goals?: RecipeGoalsContext },
 ): Promise<RecipeSuggestion[]> {
   if (!input.ingredients?.trim() && !input.imageBase64) {
     throw buildError('PARSE', 'Dodaj składniki lub zdjęcie lodówki.');
   }
 
+  const goalsPrompt = input.goals ? buildRecipeGoalsPrompt(input.goals) : '';
+
   const text = [
     input.ingredients?.trim() ? `Składniki: ${input.ingredients.trim()}.` : '',
     input.request?.trim() ?? '',
+    goalsPrompt,
     'Zaproponuj 2-3 proste dania, które mogę przyrządzić głównie z tych składników. ' +
       'Uwzględnij instrukcję przygotowania i szacunkowe wartości odżywcze. ' +
       'Zważ na użycie tylko podanych składników.',
@@ -330,13 +364,44 @@ export async function suggestRecipes(apiKey: string,
     imageBase64: input.imageBase64,
     system:
       PROMTS.global +
-      '\nWygeneruj 2-3 propozycje dań. Odpowiadaj tablicą JSON, zachowaj wszystkie pola.',
+      '\nWygeneruj 2-3 propozycje dań. Odpowiadaj tablicą JSON, zachowaj wszystkie pola.' +
+      (goalsPrompt ? `\n${goalsPrompt}` : ''),
     responseSchema: RECIPES_SCHEMA,
   });
 
   const parsed = parseArray<RecipeSuggestion>(raw);
   // Ustal maksymalnie 3 propozycje.
   return parsed.slice(0, 3);
+}
+
+/**
+ * Prompt systemowy trybu Coach (D2) — osobisty trener żywienia.
+ * Zawsze odpowiada tekstem (nigdy JSON), ton motywujący, konkretne rady PL.
+ * */
+export const COACH_SYSTEM =
+  'Jesteś osobistym trenerem żywienia w aplikacji CaiLORIES. ' +
+  'Mówisz po polsku — ciepło, motywująco i konkretnie. ' +
+  'Otrzymujesz kontekst: dziennik posiłków użytkownika z ostatnich 7 dni oraz jego dzienne cele. ' +
+  'Porównujesz spożycie z celami i dajesz 2-4 wykonalne rady na najbliższe dni ' +
+  '(co dodać, co ograniczyć, jak rozłożyć makro, jak dbać o nawodnienie). ' +
+  'Chwalisz postępy, nie oceniasz ani nie moralizujesz. Nie udzielasz porad medycznych. ' +
+  'Odpowiadasz WYŁĄCZNIE zwykłym tekstem — bez JSON; możesz używać krótkich list i emotikon.';
+
+/** Wysłanie wiadomości w trybie Coach — zwraca odpowiedź tekstową (nie JSON). */
+export async function sendCoachMessage(
+  apiKey: string,
+  model: string,
+  input: { message: string; system?: string },
+): Promise<string> {
+  if (!input.message.trim()) {
+    throw buildError('PARSE', 'Napisz, o co chcesz zapytać trenera.');
+  }
+  return generateContent(apiKey, model, {
+    text: input.message,
+    system: input.system ?? COACH_SYSTEM,
+    temperature: 0.7,
+    maxTokens: 1024,
+  });
 }
 
 /** Bezpieczne parsowanie obiektu JSON z odpowiedzi. */

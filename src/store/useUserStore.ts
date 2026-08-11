@@ -4,7 +4,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { UserProfile, GeminiModel, ApiKeyValidationStatus } from '../types';
+import type { UserProfile, GeminiModel, ApiKeyValidationStatus, ReminderKey, ReminderConfig } from '../types';
 
 const DEFAULT_PROFILE: UserProfile = {
   dailyCaloriesGoal: 2200,
@@ -14,6 +14,14 @@ const DEFAULT_PROFILE: UserProfile = {
   age: 30,
   gender: 'female',
   activityLevel: 1.375,
+};
+
+/** Domyślne przypomnienia (D3) — wszystkie wyłączone: safe opt-in, bez promptu o permisje. */
+const DEFAULT_REMINDERS: Record<ReminderKey, ReminderConfig> = {
+  breakfast: { enabled: false, time: '08:00' },
+  lunch: { enabled: false, time: '13:00' },
+  dinner: { enabled: false, time: '19:00' },
+  water: { enabled: false, time: '10:00' },
 };
 
 interface UserState {
@@ -27,6 +35,7 @@ interface UserState {
   onboardingCompleted: boolean;
   userName: string;
   avatarUrl: string;
+  reminders: Record<ReminderKey, ReminderConfig>;
 
   setApiKey: (key: string) => void;
   setModel: (model: string) => void;
@@ -40,6 +49,8 @@ interface UserState {
   setOnboardingCompleted: (val: boolean) => void;
   setUserName: (name: string) => void;
   setAvatarUrl: (url: string) => void;
+  /** Aktualizuje pojedyncze przypomnienie (klucz + częściowa łatka). */
+  setReminder: (key: ReminderKey, patch: Partial<ReminderConfig>) => void;
   resetAll: () => void;
 }
 
@@ -56,6 +67,7 @@ export const useUserStore = create<UserState>()(
       onboardingCompleted: false,
       userName: 'Użytkownik',
       avatarUrl: '',
+      reminders: DEFAULT_REMINDERS,
 
       setApiKey: (key) => set({ 
         apiKey: key, 
@@ -84,6 +96,10 @@ export const useUserStore = create<UserState>()(
       setOnboardingCompleted: (val) => set({ onboardingCompleted: val }),
       setUserName: (name) => set({ userName: name }),
       setAvatarUrl: (url) => set({ avatarUrl: url }),
+      setReminder: (key, patch) =>
+        set((state) => ({
+          reminders: { ...state.reminders, [key]: { ...state.reminders[key], ...patch } },
+        })),
       resetAll: () =>
         set({
           profile: DEFAULT_PROFILE,
@@ -96,6 +112,7 @@ export const useUserStore = create<UserState>()(
           onboardingCompleted: false,
           userName: 'Użytkownik',
           avatarUrl: '',
+          reminders: DEFAULT_REMINDERS,
         }),
     }),
     {
