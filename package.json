@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "NutriScan AI / FitCalorie AI — hybrydowa aplikacja dietetyczna (Android + PWA)",
+  "description": "CaiLORIES / FitCalorie AI — hybrydowa aplikacja dietetyczna (Android + PWA)",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

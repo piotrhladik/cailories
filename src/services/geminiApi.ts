@@ -26,13 +26,10 @@ interface SystemPrompts {
 
 const PROMTS: SystemPrompts = {
   global:
-    'Jesteś pomocnikiem aplikacji dietetycznej NutriScan AI. Zawsze musisz odpowiadać wyłącznie ' +
-    'poprawnym obiektem JSON w dokładnie takiej strukturze, jaką poda użytkownik. ' +
-    'Pomagasz w szacowaniu kaloryczności i makroskładników (Białko, Węglowodany, Tłuszcze). ' +
-    'Nie udzielasz porad medycznych.',
+    'Jesteś pomocnikiem aplikacji dietetycznej CaiLORIES. Jeśli użytkownik Cię wita (np. "Cześć", "Hej", "Witaj") lub zadaje ogólne pytania, odpowiedz mu w sposób naturalny, przyjazny i pomocny w języku polskim, bez generowania żadnego schematu JSON. Jeśli jednak użytkownik podaje konkretne informacje o posiłku (np. opisuje go, przesyła zdjęcie posiłku lub prosi o analizę), musisz odpowiedzieć wyłącznie poprawnym obiektem JSON w dokładnie takiej strukturze, jaką poda użytkownik. Pomagasz w szacowaniu kaloryczności i makroskładników (Białko, Węglowodany, Tłuszcze). Nie udzielasz porad medycznych.',
 };
 
-/** Tworzenie standardowej struktury "parts" dla treści (tekst i/lub obraz). */
+/** Tworzenie standardowej struktury \"parts\" dla treści (tekst i/lub obraz). */
 function buildParts(text: string, imageBase64?: string): unknown[] {
   const parts: unknown[] = [];
   if (text && text.trim()) {
@@ -50,8 +47,7 @@ function buildParts(text: string, imageBase64?: string): unknown[] {
 }
 
 /** Wspólna funkcja wywołania `:generateContent`. */
-async function generateContent(
-  apiKey: string,
+async function generateContent(apiKey: string,
   model: string,
   content: {
     text?: string;
@@ -165,7 +161,7 @@ function buildError(code: AppError['code'], message: string): AppError {
 /**
  * Walidacja klucza API + pobranie listy dostępnych modeli obsługujących
  * generowanie treści. Zwraca przyjazną listę modeli.
- */
+ * */
 export async function fetchAvailableModels(apiKey: string): Promise<GeminiModel[]> {
   urlCheck(apiKey, 'invalid-check');
   let res: Response;
@@ -189,7 +185,7 @@ export async function fetchAvailableModels(apiKey: string): Promise<GeminiModel[
 
   const data = (await res.json()) as { models?: Array<{ name?: string; displayName?: string; supportedGenerationMethods?: string[] }> };
   const rawModels = (data.models ?? []).filter(
-    (m) => m.supportedGenerationMethods?.includes('generateContent') && m.name?.startsWith('models/gemini'),
+    (m) => m.supportedGenerationMethods?.includes('generateContent') && m.name?.startsWith('models/gemini') && !m.name?.includes('gemini-2'),
   );
 
   const filtered: GeminiModel[] = rawModels.map((m) => ({
@@ -214,10 +210,10 @@ export async function fetchAvailableModels(apiKey: string): Promise<GeminiModel[
 }
 
 /**
- * Lekkie sprawdzenie "formatu" klucza: niepusty, bez spacji, rozsądna długość.
+ * Lekkie sprawdzenie \"formatu\" klucza: niepusty, bez spacji, rozsądna długość.
  * NIE służy do odrzucania poprawnych kluczy — prawdziwą weryfikacją jest
  * wywołanie API Gemini. Formaty kluczy bywają różne, więc używamy luźnych zasad.
- */
+ * */
 export function looksLikeApiKey(key: string): boolean {
   const trimmed = key.trim();
   if (trimmed.length < 20 || trimmed.length > 500) return false;
@@ -259,9 +255,10 @@ const RECIPES_SCHEMA: Record<string, unknown> = {
 
 /**
  * Analiza posiłku (tekst i/lub obraz) i zwrot struktury MealAnalysis.
- */
-export async function analyzeMeal(
-  apiKey: string,
+ * Jeśli użytkownik Cię wita lub zadaje ogólne pytania, odpowiedz naturalnie (bez JSON).
+ * Jeśli podaje informacje o posiłku, zwróć tylko JSON.
+ * */
+export async function analyzeMeal(apiKey: string,
   model: string,
   input: { text?: string; imageBase64?: string; system?: string },
 ): Promise<MealAnalysis> {
@@ -273,31 +270,49 @@ export async function analyzeMeal(
     ? input.text.trim()
     : 'Oszacuj wartości odżywcze tego posiłku na podstawie zdjęcia.';
 
+  // Heurystyka: czyste powitanie to KOMUNIKAT W CAŁOŚCI będący powitaniem
+  // (ew. z wykrzyknikiem), bez dopisanej treści. Dzięki temu "Cześć, policz
+  // kalorie w owsiance" trafia do analizy, a nie do ścieżki czatu.
+  const isGreeting = /^\s*(witaj|cześć|czesc|hej|hejka|hello|hi|siema|dzień dobry|dzien dobry)\s*[!.?]*\s*$/i.test(text.trim());
+  
+  let finalSystem: string;
+  let finalResponseSchema: Record<string, unknown> | undefined;
+
+  if (isGreeting && !input.imageBase64) {
+    // Jeśli to powitanie i nie ma zdjęcia, używamy promptu do naturalnej rozmowy
+    finalSystem = PROMTS.global + '\nOdpowiedz naturalnie i przyjaźnie w języku polskim.';
+    finalResponseSchema = undefined; // Wyłączamy wymuszanie JSON dla samych powitań
+  } else {
+    // Standardowa analiza posiłku
+    finalSystem = PROMTS.global + '\nOszacuj kaloryczność i makroskładniki. Podaj życzliwy, zwięzły komentarz w polu \"notes\".';
+    finalResponseSchema = MEAL_SCHEMA;
+  }
+
   const raw = await generateContent(apiKey, model, {
     text,
     imageBase64: input.imageBase64,
-    system:
-      input.system ??
-      PROMTS.global +
-        '\nOszacuj kaloryczność i makroskładniki. Podaj życzliwy, zwięzły komentarz w polu "notes".',
-    responseSchema: MEAL_SCHEMA,
+    system: input.system ?? finalSystem,
+    responseSchema: finalResponseSchema,
   });
+
+  // Jeśli nie mieliśmy schematu (czyli to było powitanie), Gemini zwrócił tekst.
+  if (!finalResponseSchema) {
+    throw buildError('CHAT', raw);
+  }
 
   return parseObject<MealAnalysis>(raw);
 }
 
 /**
- * Generator 2-3 propozycji potraw na podstawie zawartości "lodówki".
+ * Generator 2-3 propozycji potraw na podstawie zawartości \"lodówki\".
  * Można podać składniki tekstowo oraz/lub zdjęcie zawartości lodówki.
- */
-export async function suggestRecipes(
-  apiKey: string,
+ * */
+export async function suggestRecipes(apiKey: string,
   model: string,
   input: { ingredients?: string; imageBase64?: string; request?: string },
 ): Promise<RecipeSuggestion[]> {
   if (!input.ingredients?.trim() && !input.imageBase64) {
     throw buildError('PARSE', 'Dodaj składniki lub zdjęcie lodówki.');
-
   }
 
   const text = [
@@ -342,7 +357,7 @@ function parseArray<T>(raw: string): T[] {
   try {
     const value = JSON.parse(raw);
     if (!Array.isArray(value)) {
-      // Tolerancja: model czasem zwraca obiekt z kluczem "recipes".
+      // Tolerancja: model czasem zwraca obiekt z kluczem \"recipes\".
       if (value && typeof value === 'object' && Array.isArray((value as Record<string, unknown>).recipes)) {
         return (value as Record<string, unknown>).recipes as T[];
       }

@@ -50,7 +50,17 @@ export async function showBanner(): Promise<void> {
   }
 }
 
-/** Usunięcie bannera z ekranu. */
+/** Ukrycie bannera z ekranu (bez usuwania instancji — lepsze dla lifecycle). */
+export async function hideBanner(): Promise<void> {
+  if (!isNativePlatform()) return;
+  try {
+    await AdMob.hideBanner();
+  } catch {
+    /* puste */
+  }
+}
+
+/** Całkowite usunięcie bannera z ekranu. */
 export async function removeBanner(): Promise<void> {
   if (!isNativePlatform()) return;
   try {
@@ -60,9 +70,15 @@ export async function removeBanner(): Promise<void> {
   }
 }
 
-/** Przygotowanie reklamy interstitial (ładowanie w tle). */
+/** Czy wskazano ad-unit interstitial (bezpieczny no-op, gdy puste). */
+function hasInterstitialUnit(): boolean {
+  return INTERSTITIAL_AD_UNIT_ID.trim().length > 0;
+}
+
+/** Przygotowanie reklamy interstitial (ładowanie w tle). Brak ad-unitu → no-op. */
 export async function prepareInterstitial(): Promise<void> {
   if (!isNativePlatform()) return;
+  if (!hasInterstitialUnit()) return; // bezpieczny no-op: brak osobnego ad-unitu
   try {
     await AdMob.prepareInterstitial({
       adId: INTERSTITIAL_AD_UNIT_ID,
@@ -76,6 +92,7 @@ export async function prepareInterstitial(): Promise<void> {
 /** Wyświetlenie reklamy interstitial (if ready — rzuca, jeśli nie gotowa). */
 export async function showInterstitial(): Promise<void> {
   if (!isNativePlatform()) return;
+  if (!hasInterstitialUnit()) return; // bezpieczny no-op: brak osobnego ad-unitu
   try {
     await AdMob.showInterstitial();
   } catch {

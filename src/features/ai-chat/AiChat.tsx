@@ -51,7 +51,7 @@ export function AiChat(): JSX.Element {
     else show('Nie wybrano zdjęcia.', 'info');
   };
 
-  const runAnalysis = async (extraText?: string): Promise<void> => {
+      const runAnalysis = async (extraText?: string): Promise<void> => {
     const prompt = (extraText ?? text).trim();
     const hasInput = prompt.length > 0 || image !== null;
 
@@ -74,11 +74,17 @@ export function AiChat(): JSX.Element {
       const analysis = await analyzeMeal(apiKey, model, {
         text: prompt,
         imageBase64: image?.base64,
+        system: 'Jeśli to jest powitanie, odpowiedz naturalnie. Jeśli nie, przeanalizuj posiłek.',
       });
       setResult(analysis);
     } catch (err) {
-      const msg = (err as { message?: string }).message ?? 'Nie udało się przeanalizować posiłku.';
-      show(msg, 'error');
+      const e = err as { code?: string; message?: string };
+      // Powitanie / rozmowa — naturalna odpowiedź (bez JSON) pokazywana jako informacja, nie błąd.
+      if (e.code === 'CHAT' && e.message) {
+        show(e.message, 'info');
+      } else {
+        show(e.message ?? 'Nie udało się przeanalizować posiłku.', 'error');
+      }
     } finally {
       setThinking(false);
     }

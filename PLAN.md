@@ -1,7 +1,7 @@
 # NutriScan AI Development Plan
 
 ## Project Overview
-NutriScan AI / FitCalorie AI — Hybrydowa aplikacja dietetyczna (Android + PWA).
+CaiLORIES — Hybrydowa aplikacja dietetyczna (Android + PWA).
 Target: Google Play Store.
 
 ## Roadmap

@@ -1,19 +1,18 @@
 // ============================================================================
 // OnboardingFlow — orkiestrator onboardingu (bez react-routera).
-// Kolejność kroków: Powitanie → Klauzula → Klucz API → Profil (waga/wzrost).
-// Po zakończeniu aplikacja odblokowuje się (onboardingCompleted = true).
+// Kolejność kroków: Powitanie → Klauzula → Klucz API + wybór modelu.
+// Po ustawieniu modelu aplikacja odblokowuje się (onboardingCompleted = true)
+// i trafia od razu do czatu. Profil (waga/wzrost/TDEE) edytuje się w Ustawieniach.
 // ============================================================================
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useUserStore } from '../../store/useUserStore';
-import { calculateTDEE, macrosFromCalories } from '../../utils/bmr';
 import WelcomeScreen from './WelcomeScreen';
 import DisclaimerScreen from './DisclaimerScreen';
 import ApiKeyInputScreen from './ApiKeyInputScreen';
-import ProfileStepScreen, { type ProfileStepInput } from './ProfileStepScreen';
 
-type Step = 'welcome' | 'disclaimer' | 'apiKey' | 'profile';
+type Step = 'welcome' | 'disclaimer' | 'apiKey';
 
 const variants = {
   initial: { opacity: 0, y: 16 },
@@ -26,13 +25,6 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<Step>('welcome');
 
   if (onboardingCompleted) return null;
-
-  const finishProfile = (data: ProfileStepInput): void => {
-    const tdee = calculateTDEE(data);
-    const macros = macrosFromCalories(tdee);
-    useUserStore.getState().updateProfile({ ...data, dailyCaloriesGoal: tdee, macrosGoal: macros });
-    useUserStore.getState().setOnboardingCompleted(true);
-  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-background">
@@ -47,8 +39,14 @@ export default function OnboardingFlow() {
               }}
             />
           )}
-          {step === 'apiKey' && <ApiKeyInputScreen onValid={() => setStep('profile')} />}
-          {step === 'profile' && <ProfileStepScreen onDone={finishProfile} />}
+          {step === 'apiKey' && (
+            <ApiKeyInputScreen
+              onValid={() => {
+                // Domyślna zakładka to czat → odblokowanie onboardingu prowadzi prosto do czatu.
+                useUserStore.getState().setOnboardingCompleted(true);
+              }}
+            />
+          )}
         </motion.div>
       </AnimatePresence>
     </div>

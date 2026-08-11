@@ -1,6 +1,6 @@
-# Przewodnik Publikacji w Google Play — NutriScan AI
+# Przewodnik Publikacji w Google Play — CaiLORIES
 
-Ten przewodnik przeprowadzi Cię przez proces przygotowania, testowania i publikacji aplikacji **NutriScan AI** w sklepie Google Play.
+Ten przewodnik przeprowadzi Cię przez proces przygotowania, testowania i publikacji aplikacji **CaiLORIES** w sklepie Google Play.
 
 ---
 
@@ -55,7 +55,7 @@ Przed publikacją w Google Play musisz zastąpić testowe identyfikatory AdMob w
 
 1. Zaloguj się do [Google Play Console](https://play.google.com/console).
 2. Utwórz nową aplikację:
-   - **Nazwa:** NutriScan AI
+   - **Nazwa:** CaiLORIES
    - **Język domyślny:** Polski
    - **Typ:** Aplikacja
    - **Model cenowy:** Darmowa

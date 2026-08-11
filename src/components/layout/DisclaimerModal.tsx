@@ -26,7 +26,7 @@ export function DisclaimerGate(): JSX.Element | null {
         </span>
         <h2 className="mt-4 text-xl font-bold">Ważne informacje</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-          Ten komunikat dotyczy wszystkich treści aplikacji NutriScan AI.
+          Ten komunikat dotyczy wszystkich treści aplikacji CaiLORIES.
         </p>
         <ul className="mt-4 space-y-2">
           {DISCLAIMER_TEXT.map((line) => (

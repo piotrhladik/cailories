@@ -89,6 +89,12 @@ export interface UserProfile {
   gender: Gender;
   /** Współczynnik aktywności x1.2 - x1.9. */
   activityLevel: number;
+  /** Ręcznie ustawiony cel kaloryczny — ma priorytet nad BMR (jeśli >0). */
+  customCalories?: number;
+  /** Ręcznie ustawione cele makro (g) — priorytet nad BMR (jeśli >0). */
+  customProtein?: number;
+  customCarbs?: number;
+  customFats?: number;
 }
 
 /** Model Gemini dostępny dla użytkownika. */
@@ -137,7 +143,7 @@ export interface ProductInfo {
 /** Ujednolicony błąd aplikacji z kodem (do mapowania na komunikaty UI). */
 export interface AppError {
   /** Kod błędu — czytelny dla UI. */
-  code: 'API_KEY_INVALID' | 'RATE_LIMIT' | 'NETWORK' | 'NOT_FOUND' | 'PARSE' | 'UNKNOWN';
+  code: 'API_KEY_INVALID' | 'RATE_LIMIT' | 'NETWORK' | 'NOT_FOUND' | 'PARSE' | 'CHAT' | 'UNKNOWN';
   /** Komunikat po polsku dla użytkownika. */
   message: string;
 }

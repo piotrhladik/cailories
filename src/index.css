@@ -82,3 +82,108 @@ body.scanning {
     @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400;
   }
 }
+
+/* ===== Layered paper-cut — głębia i tekstura dla całej aplikacji ===== */
+/* Subtilna tekstura "papieru": delikatny ziarno/gradient na backgroundzie. */
+.paper-layer {
+  background-image:
+    radial-gradient(120% 90% at 50% -10%, rgba(132, 204, 22, 0.06), transparent 60%),
+    linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.02));
+}
+
+/* Kontury "kart" imitujące cięte warstwy papieru z wyraźną krawędzią. */
+.paper-card {
+  @apply relative overflow-hidden rounded-3xl bg-white shadow-card dark:bg-slate-800;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  background-clip: padding-box;
+}
+.paper-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(15, 23, 42, 0.05);
+  pointer-events: none;
+}
+.dark .paper-card {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Gradientowy glow dla napisu "CaiLORIES" (premium splash). */
+.glow-text {
+  background: linear-gradient(120deg, #84cc16, #3b82f6 55%, #10b981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===== GlowFrame — animowana gradientowa ramka (spójna z .glow-text) ===== */
+@property --glow-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.glow-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+/* Wirujący conic-gradient: lime → blue → emerald, powraca do punktu startu. */
+.glow-frame-rotor {
+  --glow-angle: 0deg;
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    #84cc16,
+    #3b82f6,
+    #10b981,
+    #10b981,
+    #84cc16
+  );
+  animation:
+    glow-spin 9s linear infinite,
+    glow-breathe 4s ease-in-out infinite;
+}
+
+@keyframes glow-spin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Karta wewnętrzna przykrywa środek, odsłaniając gradient tylko jako obwódkę. */
+.glow-frame-cutout {
+  position: relative;
+  margin: 2px;
+  border-radius: calc(1.25rem - 2px);
+  background: #ffffff;
+}
+.dark .glow-frame-cutout {
+  background: #1e293b; /* slate-800 — tło kart w trybie ciemnym */
+}
+
+/* Interfejsowa redukcja ruchu — WCAG 2.1 AA (User Setting). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -34,6 +34,8 @@ interface UserState {
   setApiKeyStatus: (status: ApiKeyValidationStatus) => void;
   acceptDisclaimer: () => void;
   updateProfile: (patch: Partial<UserProfile>) => void;
+  /** Ręczne cele kaloryczne/makro — mają priorytet nad obliczeniami BMR. */
+  setCustomGoals: (patch: { calories?: number; protein?: number; carbs?: number; fats?: number }) => void;
   setTheme: (theme: UserState['theme']) => void;
   setOnboardingCompleted: (val: boolean) => void;
   setUserName: (name: string) => void;
@@ -46,7 +48,7 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       profile: DEFAULT_PROFILE,
       apiKey: '',
-      selectedModel: 'gemini-2.5-flash',
+      selectedModel: 'gemini-3.5-flash-lite',
       availableModels: [],
       disclaimerAccepted: false,
       apiKeyStatus: 'idle',
@@ -67,6 +69,17 @@ export const useUserStore = create<UserState>()(
       acceptDisclaimer: () => set({ disclaimerAccepted: true }),
       updateProfile: (patch) =>
         set((state) => ({ profile: { ...state.profile, ...patch } })),
+      // Ręczne cele mają priorytet nad BMR — zapisujemy je obok wyliczonych.
+      setCustomGoals: (g) =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            customCalories: g.calories,
+            customProtein: g.protein,
+            customCarbs: g.carbs,
+            customFats: g.fats,
+          },
+        })),
       setTheme: (theme) => set({ theme }),
       setOnboardingCompleted: (val) => set({ onboardingCompleted: val }),
       setUserName: (name) => set({ userName: name }),
@@ -75,7 +88,7 @@ export const useUserStore = create<UserState>()(
         set({
           profile: DEFAULT_PROFILE,
           apiKey: '',
-          selectedModel: 'gemini-2.5-flash',
+          selectedModel: 'gemini-3.5-flash-lite',
           availableModels: [],
           disclaimerAccepted: false,
           apiKeyStatus: 'idle',

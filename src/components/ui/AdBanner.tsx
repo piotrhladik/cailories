@@ -1,11 +1,17 @@
 // ============================================================================
-// AdBanner.tsx — miejsce zarezerwowane pod reklamę (placeholder).
-// Na web/PWA pokazujemy neutralny kontener informujący o reklamie; na platformie
-// natywnej Capacitor wyświetlane są prawdziwe reklamy z AdMob.
+// AdBanner.tsx — miejsce reklamy AdMob z obsługą cyklu życia.
+// Na platformie natywnej (Capacitor/Android) wyświetlamy prawdziwy banner AdMob;
+// cykl życia (ukrycie w tle / ponowne pokazanie na foreground) realizujemy przez
+// zdarzenia `window` focus/blur. Na web/PWA pokazujemy elegancki placeholder.
 // ============================================================================
 
 import { useEffect } from 'react';
-import { isNativePlatform, showBanner } from '../../services/admobService';
+import {
+  isNativePlatform,
+  showBanner,
+  hideBanner,
+  removeBanner,
+} from '../../services/admobService';
 
 interface AdBannerProps {
   /** Wyświetlaj placeholder nawet gdy ads są wyłączone (debug). */
@@ -14,20 +20,36 @@ interface AdBannerProps {
 
 export function AdBanner({ force = false }: AdBannerProps): JSX.Element | null {
   useEffect(() => {
-    if (isNativePlatform()) {
+    if (!isNativePlatform()) return;
+
+    void showBanner();
+
+    // Cykl życia: ukryj banner gdy aplikacja traci fokus (tło), pokaż na powrót.
+    const handleBlur = (): void => {
+      void hideBanner();
+    };
+    const handleFocus = (): void => {
       void showBanner();
-      return;
-    }
+    };
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+      void removeBanner();
+    };
   }, []);
 
-  // Native roda reklamę globalnie — komponent nie renderuje dodatkowego miejsca.
+  // Na natywnej platformie banner renderowany jest natywnie — komponent nie
+  // pokazuje dodatkowego kontenera.
   if (isNativePlatform()) return null;
 
   if (!force) return null;
 
   return (
-    <div className="mx-auto my-2 flex h-14 w-full max-w-app items-center justify-center rounded-2xl border border-dashed border-slate-300 text-xs text-slate-400 dark:border-slate-600 dark:text-slate-400">
-      Reklama (AdMob) — miejsce na baner
+    <div className="mx-auto my-2 flex h-14 w-full max-w-app items-center justify-center rounded-2xl border border-dashed border-slate-300 text-xs text-slate-400 dark:border-slate-600 dark:text-slate-500">
+      Reklama (AdMob)
     </div>
   );
 }

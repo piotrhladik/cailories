@@ -1,4 +1,4 @@
-# 🚀 Status Projektu: NutriScan AI / FitCalorie AI
+# 🚀 Status Projektu: CaiLORIES
 
 ## 📋 Postępy zadań
 - [ ] **Konfiguracja AdMob** (ID aplikacji i jednostek)
