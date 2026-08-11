@@ -24,7 +24,7 @@
     "Fan-out przez Workflow: 7 agentów build, disjoint file ownership, typecheck JEDEN po integracji (uniknięcie ras npm)",
     "Design-system: semantyczne tokeny CSS-var (primary/background/foreground/muted/secondary) w tailwind.config + index.css :root/.dark — onboarding przestał być przezroczysty; kontrast .btn-primary slate-900 (AAA 7.3:1), .btn-outline lime-700 (AA 5.6:1)",
     "Onboarding: po kluczu picker modelu (default gemini-3.5-flash-lite) → start czatu bez kroku profilu (GlowFrame wokół klauzuli)",
-    "WIP 2026-08-11 niezacommitowane: ProgressScreen A1-A5 + zakładka 'progress', gate AdMob, D1 suggestRecipes, D2 Coach, D3 notifications — typecheck+build zielone (2098 modułów, gzip 134.27 kB)"
+    "2026-08-11 committed (7401136): ProgressScreen A1-A5 + zakładka 'progress', gate AdMob, D1 suggestRecipes, D2 Coach, D3 notifications, onboarding polish. Rerun typecheck+build clean (2098 modułów, gzip 134.27 kB, EXIT 0). Pliki robocze (CaiLORIES.bat, claude.xml, xml.xml, .claude/worktrees, conversation-*, settings.local) NIE są commitowane"
   ],
   "pitfalls": [
     "geminiApi.ts: backslash-escaping regression — nie łamać promptów/JSON w łańcuchach; regex `^models\/` z podwójnie-escape'owanym backslashem cicho nie dopasowuje i psuje walidację klucza",

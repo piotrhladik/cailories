@@ -9,4 +9,4 @@
 | Integracja | App.tsx route+TITLES, BottomNav 6. zakładka, ProgressScreen, gate AdMob | ⏳ | do zrobienia |
 | Weryfikacja | adversarial review + JEDEN typecheck + build | ⏳ | do zrobienia |
 | Finalizacja | commit + raport końcowy (w tym AdMob init + onAdLoaded z logów APK) | ⏳ | do zrobienia |
-| R3 Weryfikacja | typecheck 0 błędów, build EXIT 0 (2098 modułów, gzip 134.27 kB) — ProgressScreen, gate AdMob, D1-D3 | ✅ | 2026-08-11, stan niezacommitowany → commit |
+| R3 Weryfikacja | typecheck 0 błędów, build EXIT 0 (2098 modułów, gzip 134.27 kB) — ProgressScreen, gate AdMob, D1-D3 | ✅ | committed w 7401136; rerun 2026-08-11 clean, pliki robocze poza commitem |
