@@ -3,35 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
     <title>Polityka Prywatności — CaiLORIES</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 2rem; background: #f9fafb; }
-        h1 { color: #16a34a; }
-        h2 { color: #1f2937; margin-top: 1.5rem; }
-        p, li { margin-bottom: 0.75rem; }
-        ul { padding-left: 1.5rem; }
+        body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.7; color: #1f2937; max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem; background: #f9fafb; }
+        h1 { color: #16a34a; font-size: 1.75rem; }
+        h2 { color: #111827; margin-top: 2rem; font-size: 1.25rem; border-bottom: 1px solid #e5e7eb; padding-bottom: .4rem; }
+        h3 { color: #374151; font-size: 1.05rem; margin-top: 1.25rem; }
+        p, li { margin-bottom: .8rem; }
+        ul, ol { padding-left: 1.5rem; }
+        .meta { color: #6b7280; font-size: .9rem; margin-bottom: 2rem; }
+        .box { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 1rem 1.25rem; margin: 1.25rem 0; }
+        code { background: #f3f4f6; padding: .1rem .3rem; border-radius: 4px; font-size: .9em; }
+        footer { margin-top: 3rem; color: #6b7280; font-size: .85rem; border-top: 1px solid #e5e7eb; padding-top: 1rem; }
     </style>
 </head>
 <body>
     <h1>Polityka Prywatności aplikacji CaiLORIES</h1>
-    <p><strong>Ostatnia aktualizacja:</strong> 10 sierpnia 2026 r.</p>
-    
+    <p class="meta"><strong>Ostatnia aktualizacja:</strong> 11 sierpnia 2026 r.</p>
+
+    <div class="box">
+        <strong>Szybkie podsumowanie:</strong> CaiLORIES działa w architekturze <em>Local-First</em>. Twoje posiłki,
+        cele kaloryczne i Twój osobisty klucz API Gemini są przechowywane wyłącznie na Twoim urządzeniu.
+        Nie prowadzimy kont, nie uruchamiamy własnych serwerów zbierających Twoje dane i nie sprzedajemy danych osobowych.
+        Jedyne transmisje sieciowe to (1) Twoje zapytania do API Google Gemini z wykorzystaniem <em>Twojego własnego</em> klucza,
+        (2) odpytywanie publicznej bazy Open Food Facts oraz (3) reklamy Google AdMob / Google AdSense.
+    </div>
+
     <h2>1. Informacje ogólne</h2>
-    <p>Aplikacja <strong>CaiLORIES</strong> ("Aplikacja") szanuje Twoją prywatność. Niniejsza Polityka Prywatności wyjaśnia, jakie dane gromadzimy i w jaki sposób je przetwarzamy.</p>
+    <p>Niniejsza Polityka Prywatności opisuje zasady przetwarzania danych przez aplikację <strong>CaiLORIES</strong>
+    („Aplikacja”). Korzystając z Aplikacji akceptujesz zasady opisane poniżej. W razie pytań skontaktuj się z nami —
+    dane kontaktowe znajdują się w sekcji <a href="#kontakt">9. Kontakt</a>.</p>
 
-    <h2>2. Dane użytkownika i klucz API Gemini</h2>
-    <p>Aplikacja działa w architekturze <strong>Local-First / Offline-First</strong>. Wszystkie dane dotyczące posiłków, celów kalorycznych oraz osobisty klucz API Google Gemini są przechowywane wyłącznie na Twoim urządzeniu (w pamięci lokalnej przeglądarki / pamięci aplikacji). Klucz API nigdy nie jest przesyłany na żadne zewnętrzne serwery twórców aplikacji.</p>
+    <h2>2. Administrator danych i zakres odpowiedzialności</h2>
+    <p>Administratorem danych jest deweloper/firma odpowiedzialna za Aplikację (dalej „My” lub „Administrator”).
+    Ponieważ Aplikacja ma charakter <strong>lokalny</strong>, większość Twoich danych nigdy nie trafia do naszych systemów.
+    W ograniczonym zakresie przetwarzanie zachodzi przez zewnętrznych dostawców usług (Google), których polityki opisują
+    szczegóły ich przetwarzania.</p>
 
-    <h2>3. Uprawnienia urządzenia</h2>
+    <h2>3. Dane przechowywane lokalnie na urządzeniu</h2>
+    <p>Aplikacja przechowuje na Twoim urządzeniu następujące dane (w lokalnej pamięci przeglądarki / pamięci aplikacji):</p>
     <ul>
-        <li><strong>Aparat (Camera):</strong> Wykorzystywany wyłącznie na żądanie użytkownika do skanowania kodów kreskowych produktów oraz analizy zdjęć posiłków przez model Gemini AI.</li>
-        <li><strong>Internet:</strong> Używany do komunikacji z oficjalnym API Google Gemini oraz publiczną bazą Open Food Facts w celu pobierania informacji o produktach.</li>
+        <li>Historię posiłków i spożytych produktów;</li>
+        <li>Twoje indywidualne cele kaloryczne i makroskładnikowe (Białko, Węglowodany, Tłuszcze);</li>
+        <li>Konfigurację i preferencje aplikacji;</li>
+        <li>Twój <strong>osobisty klucz API Google Gemini</strong>, jeśli go podasz.</li>
+    </ul>
+    <p><strong>Twój klucz API Gemini nigdy nie jest przesyłany na nasze serwery ani udostępniany innym użytkownikom.</strong>
+    Jest wykorzystywany wyłącznie do bezpośredniej komunikacji Twojego urządzenia z oficjalnym API Google.
+    Usunięcie danych aplikacji na urządzeniu trwale kasuje wszystkie powyższe informacje.</p>
+
+    <h2>4. Uprawnienia urządzenia</h2>
+    <ul>
+        <li><strong>Aparat (Camera):</strong> wykorzystywany wyłącznie na wyraźne żądanie użytkownika do skanowania kodów
+        kreskowych (EAN) oraz analizy zdjęć posiłków przez model Gemini AI. Zdjęcia nie są przechowywane na naszych serwerach.</li>
+        <li><strong>Internet:</strong> niezbędny do komunikacji z API Google Gemini, publiczną bazą Open Food Facts oraz
+        do wyświetlania reklam.</li>
     </ul>
 
-    <h2>4. Reklamy (Google AdMob)</h2>
-    <p>Aplikacja może wyświetlać reklamy dostarczane przez sieć Google AdMob. Google AdMob może zbierać identyfikery reklamowe w celu personalizacji reklam zgodnie z polityką prywatności Google.</p>
+    <h2>5. Reklamy — Google AdMob i Google AdSense</h2>
+    <p>Aplikacja wyświetla reklamy dostarczane przez Google AdMob (wersja natywna Android) oraz Google AdSense
+    (wersja internetowa / PWA). Google może gromadzić: identyfikator reklamowy (Advertising ID) urządzenia, adres IP,
+    informacje o urządzeniu, dane o interakcjach z reklamami oraz informacje o instalacji aplikacji.</p>
+    <p>Więcej informacji o przetwarzaniu danych przez Google — w politykach:
+    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Polityka prywatności Google</a> oraz
+    <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">zasady dotyczące danych reklamowych Google</a>.</p>
 
-    <h2>5. Kontakt</h2>
-    <p>W przypadku pytań dotyczących polityki prywatności prosimy o kontakt poprzez sklep Google Play lub repozytorium projektu.</p>
+    <h3>5.1 Zgoda na reklamy spersonalizowane (Rodo / GDPR / U-CMP)</h3>
+    <p>Jeżeli przetwarzanie Twoich danych na potrzeby reklam wymaga zgody zgodnie z RODO, ustawą o ochronie danych
+    obowiązującą w Twoim kraju lub wytycznymi Google (w tym dla użytkowników z Europejskiego Obszaru Gospodarczego,
+    Wielkiej Brytanii i Szwajcarii), przed wyświetleniem spersonalizowanych reklam Google poprosi Cię o odpowiednią zgodę
+    (mechanizm Google UMP / CMP). Masz prawo wycofać zgodę w dowolnym momencie w ustawieniach systemowych urządzenia
+    („Ogranicz śledzenie reklam / Resetowanie identyfikatora reklamowego»).</p>
+
+    <h2>6. Dostawcy zewnętrzni</h2>
+    <p>Aplikacja korzysta z następujących usług zewnętrznych:</p>
+    <ul>
+        <li><strong>Google Gemini API</strong> — przetwarzanie zapytań AI (analiza posiłków). Używany wyłącznie z Twoim
+        kluczem; szczegóły przetwarzania reguluje <a href="https://ai.google.dev/terms" target="_blank" rel="noopener">regulamin Google Gemini API</a>.</li>
+        <li><strong>Open Food Facts</strong> — publiczna, otwarta baza danych produktów spożywczych. Podczas skanowania kodu EAN
+        wysyłane jest zapytanie do tej bazy; szczegóły w <a href="https://world.openfoodfacts.org/terms-of-use" target="_blank" rel="noopener">regulaminie Open Food Facts</a>.</li>
+        <li><strong>Google AdMob / AdSense</strong> — operacje reklamowe (patrz sekcja 5).</li>
+    </ul>
+
+    <h2>7. Cookies i technologie śledzenia</h2>
+    <p>Wersja internetowa (PWA) może korzystać z plików <em>cookies</em> lub podobnych technologii wyłącznie w zakresie
+    dostarczania reklam przez AdSense oraz zapewnienia funkcjonowania aplikacji. Możesz w każdej chwili usunąć cookies
+    z poziomu przeglądarki lub skorzystać z trybu prywatnego.</p>
+
+    <h2>8. Ochrona dzieci</h2>
+    <p>Aplikacja nie jest przeznaczona do świadomego gromadzenia danych osobowych od dzieci poniżej 13. roku życia.
+    Nie gromadzimy świadomie danych dzieci. Jeżeli dowiemy się, że przetworzyliśmy takie dane, usuniemy je
+    niezwłocznie.</p>
+
+    <h2>9. Prawa użytkownika i kontakt</h2>
+    <p id="kontakt">Zgodnie z RODO masz prawo do dostępu, sprostowania, usunięcia, ograniczenia przetwarzania,
+    przenoszenia danych oraz wniesienia skargi do organu nadzorczego (w Polsce: Prezes UODO). Ponieważ dane trzymane są
+    lokalnie na Twoim urządzeniu, możesz je w każdej chwili usunąć, odinstalowując Aplikację lub kasując dane aplikacji.</p>
+    <p>W sprawach prywatności skontaktuj się z nami:</p>
+    <ul>
+        <li>E-mail: <a href="mailto:kontakt@calories-app.example">kontakt@calories-app.example</a></li>
+        <li>Profil w sklepie Google Play: sekcja „Deweloper”</li>
+    </ul>
+
+    <h2>10. Zmiany w polityce</h2>
+    <p>Niniejsza Polityka może ulec zmianie. O istotnych zmianach poinformujemy aktualizując datę „Ostatnia aktualizacja”
+    powyżej oraz, w miarę możliwości, komunikat w aplikacji. Kontynuacja korzystania z aplikacji po zmianie polityki
+    oznacza jej akceptację.</p>
+
+    <footer>© 2026 CaiLORIES. Wszelkie prawa zastrzeżone.</footer>
 </body>
 </html>
