@@ -20,6 +20,11 @@ dev-dist/
 npm-debug.log*
 debug.log
 
+# Duże pliki kontekstu / konwersacji (nie commitować — zbędne tokeny)
+conversation-*.txt
+claude.xml
+xml.xml
+
 # Edytory
 .vscode/*
 !.vscode/extensions.json
@@ -41,3 +46,4 @@ ios/App/App/public/
 ios/App/build/
 ios/App/Pods/
 ios/App/App.xcworkspace/xcuserdata/
+.vercel
