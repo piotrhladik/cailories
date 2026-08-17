@@ -35,9 +35,7 @@
         </provider>
 
         <!-- Google AdMob — identyfikator aplikacji reklamowej -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1761393785289872~7024057976"/>
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-462291723554126~4046873988"/>
     </application>
 
     <!-- Permissions -->

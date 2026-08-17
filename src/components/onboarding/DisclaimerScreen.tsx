@@ -37,7 +37,7 @@ export default function DisclaimerScreen({ onAccept }: Props) {
             </p>
             <p>
               Kontynuując, akceptujesz nasz regulamin i rozumiesz, że CaiLORIES
-              odpowiedzialności za decyzje żywieniowe podejmowane na podstawie jego sugestii.
+              <b className="text-foreground"> nie ponosi odpowiedzialności </b> za decyzje żywieniowe podejmowane na podstawie jego sugestii.
             </p>
           </div>
         </GlowFrame>

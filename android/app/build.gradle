@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     namespace = "pl.nutriscan.ai"
     compileSdk = rootProject.ext.compileSdkVersion
+    buildToolsVersion = "36.0.0"
     defaultConfig {
         applicationId "pl.nutriscan.ai"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -16,10 +17,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            storeFile file("../keystore/calories-release.jks")
+            storePassword "Calories2026!"
+            keyAlias "calories"
+            keyPassword "Calories2026!"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }

@@ -6,6 +6,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
+import { initializeAdMob } from './services/admobService';
 import './index.css';
 import { App } from './App';
 
@@ -19,6 +20,9 @@ createRoot(container).render(
     <App />
   </StrictMode>,
 );
+
+// Inicjalizujemy AdMob na samym starcie aplikacji
+void initializeAdMob();
 
 // Service worker PWA (auto-update dla offline).
 registerSW({ immediate: true });

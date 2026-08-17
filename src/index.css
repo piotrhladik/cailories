@@ -210,3 +210,26 @@ body.scanning {
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== Strefa reklamowa (AdBanner) ===== */
+/* Pas w normalnym flow (nie fixed) między treścią a BottomNav. */
+/* Pozwalamy naturalnej wysokości kreacji AdSense (np. 280px) — dlatego NIE
+   wymuszamy 96px i nie przycinamy. Tło/ramka gwarantują czytelność. */
+.cai-ads-holder {
+  flex-shrink: 0 !important;
+  position: relative !important;
+}
+.cai-ads-holder > div {
+  overflow: hidden !important;
+  border-radius: 16px !important;
+}
+.cai-ad-real {
+  overflow: hidden !important;
+  border-radius: 16px !important;
+}
+.cai-ad-real .adsbygoogle {
+  display: block !important;
+  width: 100% !important;
+  min-width: 320px !important;
+  overflow: hidden !important;
+}

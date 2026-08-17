@@ -13,7 +13,6 @@ import { Scanner } from './features/scanner/Scanner';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { Settings } from './features/settings/Settings';
 import ProgressScreen from './features/progress/ProgressScreen';
-import { initializeAdMob } from './services/admobService';
 import { WEB_ADS_ENABLED } from './config';
 import type { TabKey } from './types';
 import OnboardingFlow from './components/onboarding/OnboardingFlow';
@@ -39,6 +38,13 @@ export function App(): JSX.Element {
   const theme = useUserStore((s) => s.theme);
   const onboardingCompleted = useUserStore((s) => s.onboardingCompleted);
 
+  // Po ukończeniu onboardingu ZAWSZE lądujemy na czacie (nie w ustawieniach).
+  useEffect(() => {
+    if (onboardingCompleted) {
+      setTab('chat');
+    }
+  }, [onboardingCompleted]);
+
   useEffect(() => {
     const root = document.documentElement;
     if (theme === 'system') {
@@ -54,7 +60,8 @@ export function App(): JSX.Element {
   }, [theme]);
 
   useEffect(() => {
-    void initializeAdMob();
+    // Inicjalizujemy AdMob w main.tsx dla lepszego cyklu życia,
+    // tutaj tylko dbamy o aktualizację stanu banera.
   }, []);
 
   useLeftEdgeSwipe(() => setDrawerOpen(true));
@@ -82,7 +89,7 @@ export function App(): JSX.Element {
         </main>
       )}
       
-      {WEB_ADS_ENABLED && onboardingCompleted && <AdBanner force />}
+  { (WEB_ADS_ENABLED || process.env.NODE_ENV === 'development') && onboardingCompleted && <AdBanner force /> }
       <DailySummaryDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       
       {onboardingCompleted && <BottomNav active={tab} onChange={setTab} />}

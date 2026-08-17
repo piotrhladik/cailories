@@ -15,7 +15,12 @@ import {
   BannerAdSize,
   MaxAdContentRating,
 } from '@capacitor-community/admob';
-import { BANNER_AD_UNIT_ID, INTERSTITIAL_AD_UNIT_ID } from '../config';
+import {
+  BANNER_AD_UNIT_ID,
+  INTERSTITIAL_AD_UNIT_ID,
+  USE_TEST_ADS,
+  TEST_BANNER_AD_UNIT_ID,
+} from '../config';
 
 /** Czy jesteśmy w środowisku natywnym Capacitor (Android). */
 export function isNativePlatform(): boolean {
@@ -27,7 +32,7 @@ export async function initializeAdMob(): Promise<void> {
   if (!isNativePlatform()) return;
   try {
     await AdMob.initialize({
-      initializeForTesting: false, // produkcja: prawdziwe reklamy
+      initializeForTesting: USE_TEST_ADS, // w trybie test używa ID sample
       maxAdContentRating: MaxAdContentRating.ParentalGuidance,
     });
   } catch {
@@ -40,10 +45,10 @@ export async function showBanner(): Promise<void> {
   if (!isNativePlatform()) return;
   try {
     await AdMob.showBanner({
-      adId: BANNER_AD_UNIT_ID,
+      adId: USE_TEST_ADS ? TEST_BANNER_AD_UNIT_ID : BANNER_AD_UNIT_ID,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      isTesting: false, // produkcja
+      isTesting: USE_TEST_ADS, // test: reklama sample Google
     });
   } catch {
     /* brak bannera nie przerywa działania */
