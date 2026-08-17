@@ -18,9 +18,10 @@ Używaj go jako listy kontrolnej „od końca do końca" przed przesłaniem apli
 | **Język domyślny (Play)** | Polski (`pl`) | `index.html` lang, `manifest.lang` |
 | **versionCode / versionName** | `1` / `1.0` | `android/app/build.gradle` |
 | **minSdk / targetSdk / compileSdk** | `24` / `35` / `35` | `android/variables.gradle` |
-| **AdMob App ID** | `ca-app-pub-1761393785289872~7024057976` | `src/config.ts` + `AndroidManifest.xml` |
-| **Banner Ad Unit** | `ca-app-pub-1761393785289872/7518327084` | `src/config.ts` |
-| **AdSense Publisher ID (PWA)** | `pub-1761393785289872` | `src/config.ts` |
+| **AdMob App ID** | `ca-app-pub-462291723554126~4046873988` | `src/config.ts` + `AndroidManifest.xml` |
+| **Banner Ad Unit** | `ca-app-pub-462291723554126/9919619944` | `src/config.ts` |
+| **AdSense Publisher ID (PWA)** | `pub-462291723554126` | `src/config.ts` |
+| **AdSense Ad Slot** | `2301034709` | `src/config.ts` |
 | **Model Gemini** | `gemini-3.5-flash-lite` (fallback) | `src/config.ts` |
 
 > ⚠️ **Uwaga o nazwie pakietu:** applicationId **pozostaje `pl.nutriscan.ai`**, bo Twoja aplikacja AdMob
