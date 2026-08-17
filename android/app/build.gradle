@@ -4,6 +4,13 @@ android {
     namespace = "pl.nutriscan.ai"
     compileSdk = rootProject.ext.compileSdkVersion
     buildToolsVersion = "36.0.0"
+
+    // Java 17 compatibility for Gradle 8.x
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
     defaultConfig {
         applicationId "pl.nutriscan.ai"
         minSdkVersion rootProject.ext.minSdkVersion

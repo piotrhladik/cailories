@@ -185,8 +185,8 @@ export async function fetchAvailableModels(apiKey: string): Promise<GeminiModel[
 
   const data = (await res.json()) as { models?: Array<{ name?: string; displayName?: string; supportedGenerationMethods?: string[] }> };
   const rawModels = (data.models ?? []).filter(
-    (m) => m.supportedGenerationMethods?.includes('generateContent') && m.name?.startsWith('models/gemini') && !m.name?.includes('gemini-2'),
-  );
+      (m) => m.supportedGenerationMethods?.includes('generateContent') && m.name?.startsWith('models/gemini') && m.name?.includes('gemini-3'),
+    );
 
   const filtered: GeminiModel[] = rawModels.map((m) => ({
     name: (m.name ?? '').replace(/^models\//, ''),
