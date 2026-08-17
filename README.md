@@ -88,12 +88,14 @@ Aplikacja wykorzystuje **własny klucz API użytkownika** (bez kosztów po stron
 
 1. Utwórz klucz w [Google AI Studio](https://aistudio.google.com/apikey).
 2. Otwórz aplikację → **Ustawienia** → wklej klucz → **Zweryfikuj klucz**.
-3. Wybierz jeden z pobranych modeli (np. `gemini-2.5-flash`).
+3. Wybierz jeden z **automatycznie pobranych modeli** (np. `gemini-1.5-flash`, `gemini-1.5-flash-8b`, `gemini-1.5-pro`).
 
 > **Bezpieczeństwo:** klucz jest przechowywany **wyłącznie na urządzeniu** w
 > `localStorage` i wysyłany bezpośrednio do `generativelanguage.googleapis.com`.
 > Nigdy nie trafia na serwer pośredniczący ani do repozytorium.
 > Format klucza `AIza…` jest walidowany w UI.
+
+> **Dostępne modele:** Aplikacja **dynamicznie pobiera** listę modeli z Gemini API po weryfikacji klucza. Domyślny fallback (przed wyborem) to `gemini-1.5-flash-lite`. Modele `gemini-2.x` są **celowo pomijane** (nie wszystkie klucze mają do nich dostęp).
 
 ---
 
