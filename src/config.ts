@@ -23,6 +23,9 @@ export const INTERSTITIAL_AD_UNIT_ID = '';
 /** Twoje Google AdSense Publisher ID (do reklam web/PWA, np. na iPhonie). */
 export const ADSENSE_PUBLISHER_ID = 'pub-462291723554126';
 
+/** ID jednostki reklamowej (ad slot) AdSense — wyświetlane na stronie. */
+export const ADSENSE_AD_SLOT = '2301034709';
+
 /** Czy włączone są reklamy web (AdSense) — wymaga valid Publisher ID. */
 export const WEB_ADS_ENABLED = true;
 

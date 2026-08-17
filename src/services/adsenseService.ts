@@ -15,7 +15,7 @@
 // ============================================================================
 
 import { Capacitor } from '@capacitor/core';
-import { ADSENSE_PUBLISHER_ID, WEB_ADS_ENABLED } from '../config';
+import { ADSENSE_PUBLISHER_ID, ADSENSE_AD_SLOT, WEB_ADS_ENABLED } from '../config';
 
 type AdSenseWindow = Window & {
   adsbygoogle?: unknown[];
@@ -87,6 +87,7 @@ export function renderAdSense(): boolean {
     ins.style.display = 'block';
     ins.style.minWidth = '320px';
     ins.setAttribute('data-ad-client', ADSENSE_PUBLISHER_ID);
+    ins.setAttribute('data-ad-slot', ADSENSE_AD_SLOT);
     ins.setAttribute('data-ad-format', 'auto');
     ins.setAttribute('data-full-width-responsive', 'true');
     container.appendChild(ins);
