@@ -20,7 +20,7 @@ Używaj go jako listy kontrolnej „od końca do końca" przed przesłaniem apli
 | **minSdk / targetSdk / compileSdk** | `24` / `35` / `35` | `android/variables.gradle` |
 | **AdMob App ID** | `ca-app-pub-462291723554126~4046873988` | `src/config.ts` + `AndroidManifest.xml` |
 | **Banner Ad Unit** | `ca-app-pub-462291723554126/9919619944` | `src/config.ts` |
-| **AdSense Publisher ID (PWA)** | `pub-462291723554126` | `src/config.ts` |
+| **AdSense Publisher ID (PWA)** | `pub-4622917235554126` | `src/config.ts` + `public/ads.txt` |
 | **AdSense Ad Slot** | `2301034709` | `src/config.ts` |
 | **Model Gemini** | `gemini-3.5-flash-lite` (fallback) | `src/config.ts` |
 
@@ -192,6 +192,7 @@ Wypełnij zgodnie z prawdą na podstawie zawartości aplikacji:
 
 - **iOS nie jest w Google Play** — wersja PWA dla iPhone („Dodaj do ekranu głównego”) i web korzysta z **Google AdSense**
   (`adsenseService.ts`), nie AdMob. To już zaimplementowane i nie ma wpływu na publikację w Play.
+- Plik autoryzacji sprzedawcy reklam jest dostępny jako `public/ads.txt`; po wdrożeniu musi odpowiadać bez przekierowania ani logowania pod `https://calories-piotrhladiks-projects.vercel.app/ads.txt` (wyłącz Deployment Protection dla produkcji).
 - Manifest PWA (nazwa, ikony, maskable, standalone) jest kompletny w `public/manifest.webmanifest`.
 
 ---
