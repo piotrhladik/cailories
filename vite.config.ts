@@ -13,7 +13,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png'],
+      // ads.txt pozostaje dostępny w katalogu głównym także w wersji PWA.
+      includeAssets: ['ads.txt', 'favicon.svg', 'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png'],
       manifest: false, // manifest dostarczamy ręcznie w /public/manifest.webmanifest
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],

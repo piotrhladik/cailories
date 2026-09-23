@@ -166,10 +166,11 @@ Dopasowuje się do ustawień systemu lub wybory w aplikacji (ikona księżyca/s�
 
 ---
 
-## 💰 Monetyzacja (Google AdMob)
+## 💰 Monetyzacja (Google AdMob / AdSense)
 
-- **Banner adaptacyjny** — dolna część ekranu.
-- **Interstitial** — po zapisaniu posiłku z analizy AI / lodówki.
+- **Android APK:** Google AdMob — banner adaptacyjny w dolnej części ekranu.
+- **Web / PWA:** Google AdSense — konfiguracja w `src/config.ts`, autoryzacja sprzedawcy w `public/ads.txt`.
+- **Interstitial:** po zapisaniu posiłku z analizy AI / lodówki.
 
 ### Konfiguracja przed publikacją
 

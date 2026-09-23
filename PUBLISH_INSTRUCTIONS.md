@@ -5,10 +5,11 @@
 | Element | Status | Szczegóły |
 |---------|--------|-----------|
 | **Kod źródłowy** | ✅ | GitHub: https://github.com/piotrhladik/cailories |
-| **Strona WWW (Vercel)** | ✅ | https://cailories.pl (HTTPS, HTTP 200) |
-| **Domena + DNS** | ✅ | A `@` → `216.198.79.1`, CNAME `www` → `cname.vercel-dns.com` |
-| **Polityka prywatności** | ✅ | https://cailories.pl/privacy-policy.html |
-| **AdSense (WWW)** | ✅ | Publisher ID: `pub-462291723554126`, Slot: `2301034709` |
+| **Strona WWW (Vercel)** | ⚠️ | https://calories-piotrhladiks-projects.vercel.app (deployment musi być publiczny) |
+| **Domena własna + DNS** | — | Nieużywana — aplikacja korzysta z domyślnej domeny Vercel |
+| **Polityka prywatności** | ⚠️ | https://calories-piotrhladiks-projects.vercel.app/privacy-policy.html |
+| **AdSense (WWW)** | ✅ | Publisher ID: `pub-4622917235554126`, Slot: `2301034709` |
+| **ads.txt (WWW)** | ⚠️ | `https://calories-piotrhladiks-projects.vercel.app/ads.txt` (wymaga wyłączonego Deployment Protection) |
 | **AdMob (APK)** | ✅ | App ID: `ca-app-pub-462291723554126~4046873988`, Banner: `ca-app-pub-462291723554126/9919619944` |
 | **USE_TEST_ADS** | ✅ | `false` (produkcyjne reklamy) |
 | **Debug APK v2.1** | ✅ | **`CaiLORIES-v2.1-debug.apk`** (w repo i lokalnie) |
@@ -101,7 +102,7 @@ https://play.google.com/console → Zapłać opłatę → Zweryfikuj tożsamoś�
 | Grafika wyróżniająca 1024×500 | Musisz przygotować (JPEG/PNG) |
 | Zrzuty ekranu | Min. 2 (telefon 16:9 lub 9:16), dodaj 4–8 |
 | Kategoria | Zdrowie i fitness |
-| **Polityka prywatności — URL** | **`https://cailories.pl/privacy-policy.html`** ✅ |
+| **Polityka prywatności — URL** | `https://calories-piotrhladiks-projects.vercel.app/privacy-policy.html` (po wyłączeniu Deployment Protection) |
 | E-mail dewelopera | Ten sam co w polityce prywatności |
 
 ### 4. Karta „Dane w aplikacji” (Data Safety)
@@ -135,7 +136,8 @@ https://play.google.com/console → Zapłać opłatę → Zweryfikuj tożsamoś�
 ## 📱 PWA / iOS (dodatkowe info)
 
 - **iOS nie trafia do Google Play** — użytkownicy iPhone dodają do ekranu głównego przez Safari („Dodaj do ekranu głównego”)
-- Wersja PWA/web korzysta z **Google AdSense** (`adsenseService.ts`), nie AdMob — to już działa na `cailories.pl`
+- Wersja PWA/web korzysta z **Google AdSense** (`adsenseService.ts`), nie AdMob.
+- Publiczny adres produkcyjny to `https://calories-piotrhladiks-projects.vercel.app`; w Vercel trzeba wyłączyć Deployment Protection dla produkcji.
 - Manifest PWA kompletny: `public/manifest.webmanifest` (ikony, maskable, standalone)
 
 ---
@@ -149,8 +151,8 @@ https://play.google.com/console → Zapłać opłatę → Zweryfikuj tożsamoś�
 | **Google Play Console** | https://play.google.com/console |
 | **Google AdMob** | https://admob.google.com |
 | **Google AdSense** | https://adsense.google.com |
-| **Domena (nazwa.pl)** | Panel DNS → rekordy A/CNAME |
-| **Polityka prywatności (live)** | https://cailories.pl/privacy-policy.html |
+| **Publiczna strona Vercel** | https://calories-piotrhladiks-projects.vercel.app |
+| **Polityka prywatności (live)** | https://calories-piotrhladiks-projects.vercel.app/privacy-policy.html |
 
 ---
 
@@ -159,11 +161,11 @@ https://play.google.com/console → Zapłać opłatę → Zweryfikuj tożsamoś�
 - [ ] **Podpisany AAB** wygenerowany (`bundleRelease` / Android Studio)
 - [ ] **Keystore** zabezpieczony (kopia zapasowa w bezpiecznym miejscu!)
 - [ ] **E-mail kontaktowy** w `privacy-policy.html` zastąpiony na prawdziwy (zastąp `kontakt@calories-app.example`)
-- [ ] Polityka prywatności opublikowana pod `https://cailories.pl/privacy-policy.html` ✅
+- [ ] Deployment Protection wyłączony dla produkcji, a polityka prywatności publicznie dostępna pod `https://calories-piotrhladiks-projects.vercel.app/privacy-policy.html`
 - [ ] `USE_TEST_ADS = false` w `src/config.ts` ✅
 - [ ] Ikona 512×512, grafika 1024×500, zrzuty ekranu załadowane
 - [ ] Data Safety, Content Rating, Docelowi odbiorcy wypełnione
-- [ ] **Domena `cailories.pl` dodana w AdSense** (Witryny → Dodaj witrynę) — bez tego reklamy na stronie nie zadziałają!
+- [ ] **Host `calories-piotrhladiks-projects.vercel.app` dodany w AdSense** (Witryny → Dodaj witrynę) — bez tego reklamy na stronie nie zadziałają!
 - [ ] Test zamknięty przeszedł na realnym urządzeniu (APK z AdMob działa)
 
 ---
